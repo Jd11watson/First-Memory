@@ -84,7 +84,7 @@ export default function PlayerDashboard({ player }) {
   const [showAllRounds, setShowAllRounds] = useState(false)
 
   const rounds = useMemo(() => {
-    const filtered = filterBySeason(player.rounds ?? [], season)
+    const filtered = filterBySeason(player.roundLog ?? [], season)
     return filtered.map(r => ({
       ...r,
       toPar: scoreToPar(r.score, r.par),
@@ -156,7 +156,7 @@ export default function PlayerDashboard({ player }) {
         <div>
           <h1 className="text-3xl font-extrabold text-white">{player.name}</h1>
           <p className="text-gray-500 text-sm mt-0.5">
-            {player.rounds ?? rounds.length} rounds · Season avg {fmt(player.avg ?? s('avg'), 1)}
+            {player.rounds ?? player.roundLog?.length ?? 0} rounds · Season avg {fmt(player.avg ?? s('avg'), 1)}
           </p>
         </div>
         {/* Season filter */}
