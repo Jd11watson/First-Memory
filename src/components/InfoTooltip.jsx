@@ -21,18 +21,15 @@ export default function InfoTooltip({ title, body }) {
     <div className="relative inline-block" ref={ref}>
       <button
         onClick={() => setOpen(v => !v)}
-        className="w-4 h-4 rounded-full border border-gray-700 text-gray-600 hover:border-emerald-700 hover:text-emerald-400 transition-colors flex items-center justify-center text-[10px] font-bold leading-none select-none"
-        aria-label="More info"
+        className="w-4 h-4 rounded-full border border-zinc-700 text-zinc-600 hover:border-zinc-500 hover:text-zinc-400 transition-colors flex items-center justify-center text-[10px] font-bold select-none"
       >
         i
       </button>
-
       {open && (
-        <div className="absolute z-50 bottom-full mb-2 right-0 w-64 rounded-xl border border-emerald-900/60 bg-gray-950 shadow-2xl p-4 text-left">
-          {/* Arrow */}
-          <div className="absolute -bottom-1.5 right-3 w-3 h-3 bg-gray-950 border-r border-b border-emerald-900/60 rotate-45" />
-          <p className="font-display font-semibold text-emerald-400 text-xs uppercase tracking-wider mb-1.5">{title}</p>
-          <p className="text-gray-300 text-xs leading-relaxed whitespace-pre-line">{body}</p>
+        <div className="absolute z-50 bottom-full mb-2 right-0 w-64 rounded-xl border border-zinc-700 bg-zinc-900 shadow-2xl shadow-black/50 p-4 text-left">
+          <div className="absolute -bottom-1.5 right-3 w-3 h-3 bg-zinc-900 border-r border-b border-zinc-700 rotate-45" />
+          <p className="font-display font-semibold text-green-400 text-xs uppercase tracking-wider mb-2">{title}</p>
+          <p className="text-zinc-400 text-xs leading-relaxed whitespace-pre-line">{body}</p>
         </div>
       )}
     </div>

@@ -1,17 +1,14 @@
 import { useState } from 'react'
-import { STAT_META, fmtSG, fmtPct, fmt, sgColor } from '../utils/stats'
-import {
-  RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, Legend,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, Cell
-} from 'recharts'
+import { STAT_META, fmtSG, fmtPct, fmt } from '../utils/stats'
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts'
 
 const PLAYER_COLORS = [
-  '#10b981', '#3b82f6', '#f59e0b', '#ef4444',
-  '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#84cc16',
+  '#4ade80', '#60a5fa', '#fbbf24', '#f87171',
+  '#a78bfa', '#34d399', '#fb923c', '#38bdf8', '#e879f9',
 ]
 
 const COMPARE_STATS = [
-  { key: 'avg',         label: 'Scoring Avg',    lowerBetter: true },
+  { key: 'avg',         label: 'Scoring Avg',    lowerBetter: true  },
   { key: 'sgDriving',   label: 'SG: Driving',    lowerBetter: false },
   { key: 'sgApproach',  label: 'SG: Approach',   lowerBetter: false },
   { key: 'sgShortGame', label: 'SG: Short Game', lowerBetter: false },
@@ -19,35 +16,38 @@ const COMPARE_STATS = [
   { key: 'girPct',      label: 'GIR %',          lowerBetter: false },
   { key: 'fwPct',       label: 'Fairways %',     lowerBetter: false },
   { key: 'scrambling',  label: 'Scrambling %',   lowerBetter: false },
-  { key: 'threePutt',   label: '3-Putt %',       lowerBetter: true },
+  { key: 'threePutt',   label: '3-Putt %',       lowerBetter: true  },
   { key: 'birdieAvg',   label: 'Birdie Avg',     lowerBetter: false },
-  { key: 'bogeyAvg',    label: 'Bogey Avg',      lowerBetter: true },
-  { key: 'par3',        label: 'Par 3 Avg',      lowerBetter: true },
-  { key: 'par4',        label: 'Par 4 Avg',      lowerBetter: true },
-  { key: 'par5',        label: 'Par 5 Avg',      lowerBetter: true },
+  { key: 'bogeyAvg',    label: 'Bogey Avg',      lowerBetter: true  },
+  { key: 'par3',        label: 'Par 3 Avg',      lowerBetter: true  },
+  { key: 'par4',        label: 'Par 4 Avg',      lowerBetter: true  },
+  { key: 'par5',        label: 'Par 5 Avg',      lowerBetter: true  },
 ]
 
 const RADAR_STATS = [
   { key: 'sgDriving',   label: 'Driving',    center: 0,  scale: 25 },
   { key: 'sgApproach',  label: 'Approach',   center: 0,  scale: 25 },
-  { key: 'sgShortGame', label: 'Short Game', center: 0,  scale: 25 },
+  { key: 'sgShortGame', label: 'Short Gm',   center: 0,  scale: 25 },
   { key: 'sgPutting',   label: 'Putting',    center: 0,  scale: 25 },
-  { key: 'girPct',      label: 'GIR',        center: 50, scale: 1 },
-  { key: 'scrambling',  label: 'Scrambling', center: 50, scale: 1 },
+  { key: 'girPct',      label: 'GIR',        center: 50, scale: 1  },
+  { key: 'scrambling',  label: 'Scrambling', center: 50, scale: 1  },
 ]
 
 function fmtVal(key, val) {
   if (val === null || val === undefined) return '—'
-  const meta = STAT_META.find(s => s.key === key)
-  return meta ? meta.format(val) : String(val)
+  return STAT_META.find(s => s.key === key)?.format(val) ?? String(val)
+}
+
+const TOOLTIP_STYLE = {
+  background: '#18181b', border: '1px solid #3f3f46',
+  borderRadius: 10, fontSize: 12, fontFamily: 'Space Grotesk',
 }
 
 export default function ComparisonView({ players }) {
   const [selected, setSelected] = useState(players.slice(0, 3).map(p => p.name))
-
   const active = players.filter(p => selected.includes(p.name))
 
-  function togglePlayer(name) {
+  function toggle(name) {
     setSelected(prev =>
       prev.includes(name)
         ? prev.length > 1 ? prev.filter(n => n !== name) : prev
@@ -55,46 +55,41 @@ export default function ComparisonView({ players }) {
     )
   }
 
-  // Radar data
+  const colorOf = name => PLAYER_COLORS[players.findIndex(p => p.name === name) % PLAYER_COLORS.length]
+
   const radarData = RADAR_STATS.map(({ key, label, center, scale }) => {
     const entry = { stat: label }
     active.forEach(p => {
       const v = p[key]
-      entry[p.name] = v !== null && v !== undefined ? Math.max(0, Math.min(100, center + (v * scale))) : 50
+      entry[p.name] = v !== null && v !== undefined ? Math.max(0, Math.min(100, center + v * scale)) : 50
     })
     return entry
   })
 
-  // Bar chart: SG breakdown
-  const sgData = ['sgDriving', 'sgApproach', 'sgShortGame', 'sgPutting'].map(key => {
-    const entry = { stat: STAT_META.find(s => s.key === key)?.label?.replace('SG: ', '') ?? key }
+  const sgData = ['sgDriving', 'sgApproach', 'sgShortGame', 'sgPutting'].map((key, i) => {
+    const entry = { stat: ['Driving', 'Approach', 'Short Gm', 'Putting'][i] }
     active.forEach(p => { entry[p.name] = p[key] ?? null })
     return entry
   })
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+
       {/* Player selector */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-        <p className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-3">Select Players to Compare</p>
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <p className="section-title mb-4">Select Players</p>
         <div className="flex flex-wrap gap-2">
-          {players.map((p, i) => {
-            const isSelected = selected.includes(p.name)
+          {players.map(p => {
+            const isOn = selected.includes(p.name)
+            const color = colorOf(p.name)
             return (
-              <button
-                key={p.name}
-                onClick={() => togglePlayer(p.name)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-all ${
-                  isSelected
-                    ? 'border-transparent text-white'
-                    : 'border-gray-700 text-gray-500 hover:text-gray-300'
+              <button key={p.name} onClick={() => toggle(p.name)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-display font-semibold border transition-all ${
+                  isOn ? 'text-zinc-950' : 'border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:border-zinc-600'
                 }`}
-                style={isSelected ? { background: PLAYER_COLORS[i % PLAYER_COLORS.length] + '33', borderColor: PLAYER_COLORS[i % PLAYER_COLORS.length] } : {}}
-              >
-                <span
-                  className="w-2.5 h-2.5 rounded-full"
-                  style={{ background: isSelected ? PLAYER_COLORS[i % PLAYER_COLORS.length] : '#374151' }}
-                />
+                style={isOn ? { background: color, borderColor: color } : {}}>
+                <span className="w-2 h-2 rounded-full shrink-0"
+                  style={{ background: isOn ? 'rgba(0,0,0,0.3)' : '#3f3f46' }} />
                 {p.name}
               </button>
             )
@@ -104,68 +99,51 @@ export default function ComparisonView({ players }) {
 
       {/* Radar + SG bars */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Radar */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <h3 className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-3">Player Profiles</h3>
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+          <p className="section-title">Player Profiles</p>
           <ResponsiveContainer width="100%" height={260}>
             <RadarChart data={radarData}>
-              <PolarGrid stroke="#1f2937" />
-              <PolarAngleAxis dataKey="stat" tick={{ fontSize: 11, fill: '#9ca3af' }} />
-              {active.map((p, i) => (
-                <Radar
-                  key={p.name}
-                  dataKey={p.name}
-                  stroke={PLAYER_COLORS[players.findIndex(pl => pl.name === p.name) % PLAYER_COLORS.length]}
-                  fill={PLAYER_COLORS[players.findIndex(pl => pl.name === p.name) % PLAYER_COLORS.length]}
-                  fillOpacity={0.1}
-                  strokeWidth={2}
-                />
+              <PolarGrid stroke="#27272a" />
+              <PolarAngleAxis dataKey="stat" tick={{ fontSize: 11, fill: '#71717a', fontFamily: 'Space Grotesk' }} />
+              {active.map(p => (
+                <Radar key={p.name} dataKey={p.name}
+                  stroke={colorOf(p.name)} fill={colorOf(p.name)} fillOpacity={0.1} strokeWidth={2} />
               ))}
-              <Legend wrapperStyle={{ fontSize: 11, color: '#9ca3af' }} />
+              <Legend wrapperStyle={{ fontSize: 11, color: '#71717a', fontFamily: 'Space Grotesk' }} />
             </RadarChart>
           </ResponsiveContainer>
         </div>
 
-        {/* SG bars */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <h3 className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-3">Strokes Gained Breakdown</h3>
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+          <p className="section-title">Strokes Gained Breakdown</p>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={sgData} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
-              <XAxis dataKey="stat" tick={{ fontSize: 10, fill: '#6b7280' }} tickLine={false} axisLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: '#6b7280' }} tickLine={false} axisLine={false} />
-              <ReferenceLine y={0} stroke="#374151" />
-              <Tooltip
-                contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 8, fontSize: 12 }}
-                formatter={(v, name) => [v !== null ? Number(v).toFixed(2) : '—', name]}
-              />
-              {active.map((p) => (
-                <Bar
-                  key={p.name}
-                  dataKey={p.name}
-                  fill={PLAYER_COLORS[players.findIndex(pl => pl.name === p.name) % PLAYER_COLORS.length]}
-                  radius={[3, 3, 0, 0]}
-                  maxBarSize={20}
-                />
+              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+              <XAxis dataKey="stat" tick={{ fontSize: 11, fill: '#71717a', fontFamily: 'Space Grotesk' }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: '#52525b' }} tickLine={false} axisLine={false} />
+              <ReferenceLine y={0} stroke="#3f3f46" />
+              <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v, name) => [v !== null ? Number(v).toFixed(2) : '—', name]} cursor={{ fill: '#ffffff06' }} />
+              {active.map(p => (
+                <Bar key={p.name} dataKey={p.name} fill={colorOf(p.name)} radius={[3, 3, 0, 0]} maxBarSize={20} />
               ))}
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Full stat comparison table */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-800">
-          <h3 className="text-xs text-gray-500 uppercase tracking-wider font-medium">Full Stat Comparison</h3>
+      {/* Stat table */}
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-zinc-800">
+          <p className="section-title mb-0">Full Stat Comparison</p>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-800">
-                <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium">Stat</th>
-                {active.map((p, i) => (
-                  <th key={p.name} className="text-center px-4 py-3 text-xs font-semibold"
-                    style={{ color: PLAYER_COLORS[players.findIndex(pl => pl.name === p.name) % PLAYER_COLORS.length] }}>
+              <tr className="border-b border-zinc-800">
+                <th className="text-left px-5 py-3 label-xs">Stat</th>
+                {active.map(p => (
+                  <th key={p.name} className="text-center px-5 py-3 font-display font-bold text-sm"
+                    style={{ color: colorOf(p.name) }}>
                     {p.name}
                   </th>
                 ))}
@@ -173,26 +151,20 @@ export default function ComparisonView({ players }) {
             </thead>
             <tbody>
               {COMPARE_STATS.map(stat => {
-                const vals = active.map(p => p[stat.key])
-                const validVals = vals.filter(v => v !== null && v !== undefined)
-                const bestVal = validVals.length
-                  ? stat.lowerBetter ? Math.min(...validVals) : Math.max(...validVals)
-                  : null
-
+                const vals = active.map(p => p[stat.key]).filter(v => v !== null && v !== undefined)
+                const best = vals.length ? (stat.lowerBetter ? Math.min(...vals) : Math.max(...vals)) : null
                 return (
-                  <tr key={stat.key} className="border-b border-gray-800/40 hover:bg-gray-800/20 transition-colors">
-                    <td className="px-4 py-3 text-gray-400 text-xs font-medium">{stat.label}</td>
-                    {active.map((p) => {
+                  <tr key={stat.key} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
+                    <td className="px-5 py-3 text-zinc-500 text-xs font-display font-medium">{stat.label}</td>
+                    {active.map(p => {
                       const v = p[stat.key]
-                      const isBest = v !== null && v !== undefined && v === bestVal && validVals.length > 1
+                      const isBest = v !== null && v !== undefined && v === best && vals.length > 1
                       return (
-                        <td key={p.name} className="px-4 py-3 text-center">
-                          <span className={`font-mono font-semibold text-sm ${
-                            isBest ? 'text-emerald-400' : 'text-gray-300'
-                          }`}>
+                        <td key={p.name} className="px-5 py-3 text-center">
+                          <span className={`font-mono font-semibold text-sm ${isBest ? 'text-green-400' : 'text-zinc-300'}`}>
                             {fmtVal(stat.key, v)}
                           </span>
-                          {isBest && <span className="ml-1 text-emerald-500 text-xs">★</span>}
+                          {isBest && <span className="ml-1 text-green-500 text-xs">★</span>}
                         </td>
                       )
                     })}

@@ -28,19 +28,17 @@ export default function FileUpload({ onData }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: '#050a07' }}>
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-4">
+      <div className="max-w-sm w-full">
 
-        {/* Wordmark */}
         <div className="flex items-center gap-3 mb-10">
-          <div className="w-10 h-10 rounded-full bg-emerald-900 ring-1 ring-emerald-700/50 flex items-center justify-center text-xl">⛳</div>
+          <div className="w-9 h-9 rounded-lg bg-green-500 flex items-center justify-center text-lg">⛳</div>
           <div>
-            <h1 className="font-display text-xl font-bold text-white tracking-tight leading-none">Golf Analytics</h1>
-            <p className="text-[11px] text-emerald-700 uppercase tracking-widest font-display mt-0.5">Team Dashboard</p>
+            <h1 className="font-display font-bold text-white text-lg leading-tight">Golf Analytics</h1>
+            <p className="text-[11px] text-zinc-600 uppercase tracking-widest font-display">Team Dashboard</p>
           </div>
         </div>
 
-        {/* Drop zone */}
         <div
           onDragOver={e => { e.preventDefault(); setDragging(true) }}
           onDragLeave={() => setDragging(false)}
@@ -48,39 +46,36 @@ export default function FileUpload({ onData }) {
           onClick={() => inputRef.current.click()}
           className={`rounded-2xl border-2 border-dashed p-12 text-center cursor-pointer transition-all select-none ${
             dragging
-              ? 'border-emerald-600 bg-emerald-950/30'
-              : 'border-[#1f3326] hover:border-emerald-800 hover:bg-emerald-950/10'
+              ? 'border-green-500 bg-green-500/5'
+              : 'border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900/50'
           }`}
         >
-          <input
-            ref={inputRef}
-            type="file"
-            accept=".xlsx,.xls"
-            className="hidden"
-            onChange={e => handle(e.target.files[0])}
-          />
+          <input ref={inputRef} type="file" accept=".xlsx,.xls" className="hidden"
+            onChange={e => handle(e.target.files[0])} />
           {loading ? (
             <div className="flex flex-col items-center gap-4">
-              <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
-              <p className="text-gray-500 text-sm font-display">Parsing workbook…</p>
+              <div className="w-7 h-7 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
+              <p className="text-zinc-500 text-sm font-display">Reading workbook…</p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3">
-              <div className="text-4xl opacity-60">📊</div>
-              <p className="font-display font-semibold text-gray-300 text-base">Drop your Excel file here</p>
-              <p className="text-gray-600 text-xs">or tap to browse · .xlsx / .xls</p>
+              <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center text-2xl">📊</div>
+              <div>
+                <p className="font-display font-semibold text-zinc-300">Drop your Excel file</p>
+                <p className="text-zinc-600 text-xs mt-1">or click to browse · .xlsx / .xls</p>
+              </div>
             </div>
           )}
         </div>
 
         {error && (
-          <div className="mt-4 border border-red-900/60 rounded-xl p-4 text-red-400 text-xs bg-red-950/20">
-            <strong className="font-display">Parse error:</strong> {error}
+          <div className="mt-4 border border-red-800/50 rounded-xl p-4 text-red-400 text-xs bg-red-950/20">
+            <strong className="font-display">Error:</strong> {error}
           </div>
         )}
 
-        <p className="mt-6 text-center text-[11px] text-gray-800">
-          Data is processed entirely in your browser — never uploaded anywhere.
+        <p className="mt-5 text-center text-[11px] text-zinc-700">
+          Processed entirely in your browser — data never uploaded.
         </p>
       </div>
     </div>

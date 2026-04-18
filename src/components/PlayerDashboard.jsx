@@ -59,9 +59,9 @@ const INFO = {
 function ScoreRow({ round }) {
   const toPar = scoreToPar(round.score, round.par)
   return (
-    <tr className="border-b border-[#162318]/80 hover:bg-emerald-950/10 transition-colors text-xs">
-      <td className="px-3 py-2 text-gray-500 whitespace-nowrap">{round.date}</td>
-      <td className="px-3 py-2 text-gray-400 whitespace-nowrap max-w-[140px] truncate">{round.course}</td>
+    <tr className="border-b border-zinc-800/80 hover:bg-green-950/10 transition-colors text-xs">
+      <td className="px-3 py-2 text-zinc-600 whitespace-nowrap">{round.date}</td>
+      <td className="px-3 py-2 text-zinc-400 whitespace-nowrap max-w-[140px] truncate">{round.course}</td>
       <td className="px-3 py-2 text-center">
         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wide ${
           round.type === 'T' ? 'bg-amber-950/60 text-amber-400' : 'bg-blue-950/60 text-blue-400'
@@ -69,7 +69,7 @@ function ScoreRow({ round }) {
           {round.type === 'T' ? 'TOURN' : 'QUAL'}
         </span>
       </td>
-      <td className="px-3 py-2 text-center text-gray-500">{round.par}</td>
+      <td className="px-3 py-2 text-center text-zinc-600">{round.par}</td>
       <td className={`px-3 py-2 text-center font-display font-bold ${scoreColor(toPar)}`}>
         {round.score}{toPar !== null ? ` (${toPar >= 0 ? '+' : ''}${toPar})` : ''}
       </td>
@@ -77,9 +77,9 @@ function ScoreRow({ round }) {
       <td className={`px-3 py-2 text-center font-mono text-xs ${sgColor(round.sgApproach)}`}>{fmtSG(round.sgApproach)}</td>
       <td className={`px-3 py-2 text-center font-mono text-xs ${sgColor(round.sgShortGame)}`}>{fmtSG(round.sgShortGame)}</td>
       <td className={`px-3 py-2 text-center font-mono text-xs ${sgColor(round.sgPutting)}`}>{fmtSG(round.sgPutting)}</td>
-      <td className="px-3 py-2 text-center text-gray-400">{fmtPct(round.girPct)}</td>
-      <td className="px-3 py-2 text-center text-gray-400">{fmtPct(round.fwPct)}</td>
-      <td className="px-3 py-2 text-center text-gray-400">{fmtPct(round.scrambling)}</td>
+      <td className="px-3 py-2 text-center text-zinc-400">{fmtPct(round.girPct)}</td>
+      <td className="px-3 py-2 text-center text-zinc-400">{fmtPct(round.fwPct)}</td>
+      <td className="px-3 py-2 text-center text-zinc-400">{fmtPct(round.scrambling)}</td>
     </tr>
   )
 }
@@ -87,7 +87,7 @@ function ScoreRow({ round }) {
 // Section header ──────────────────────────────────────────────────────────────
 function SectionHeading({ children }) {
   return (
-    <h2 className="font-display text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-3 pt-2">
+    <h2 className="font-display text-xs font-semibold uppercase tracking-widest text-zinc-500 mb-3 pt-2">
       {children}
     </h2>
   )
@@ -141,21 +141,21 @@ export default function PlayerDashboard({ player }) {
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
       {/* ── Header ── */}
-      <div className="flex items-end justify-between flex-wrap gap-4 border-b border-[#162318] pb-6">
+      <div className="flex items-end justify-between flex-wrap gap-4 border-b border-zinc-800 pb-6">
         <div>
           <p className="label-xs mb-1">Player</p>
           <h1 className="font-display text-4xl font-bold text-white tracking-tight">{player.name}</h1>
-          <p className="text-gray-600 text-sm mt-1">
+          <p className="text-zinc-600 text-sm mt-1">
             {player.rounds ?? rounds.length} rounds recorded
           </p>
         </div>
-        <div className="flex gap-1 bg-[#0c1410] border border-[#162318] rounded-lg p-1">
+        <div className="flex gap-1 bg-zinc-900 border border-zinc-800 rounded-lg p-1">
           {SEASONS.map(opt => (
             <button
               key={opt.id}
               onClick={() => setSeason(opt.id)}
               className={`px-4 py-1.5 rounded-md text-xs font-display font-semibold transition-all ${
-                season === opt.id ? 'bg-emerald-700 text-white shadow' : 'text-gray-500 hover:text-gray-300'
+                season === opt.id ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-200'
               }`}
             >
               {opt.label}
@@ -282,8 +282,8 @@ export default function PlayerDashboard({ player }) {
           <p className="label-xs mb-3">Player Profile</p>
           <ResponsiveContainer width="100%" height={220}>
             <RadarChart data={radarData}>
-              <PolarGrid stroke="#162318" />
-              <PolarAngleAxis dataKey="stat" tick={{ fontSize: 11, fill: '#4b5563', fontFamily: 'Space Grotesk' }} />
+              <PolarGrid stroke="#27272a" />
+              <PolarAngleAxis dataKey="stat" tick={{ fontSize: 11, fill: '#71717a', fontFamily: 'Space Grotesk' }} />
               <Radar dataKey="value" stroke="#22c55e" fill="#22c55e" fillOpacity={0.15} strokeWidth={2} />
             </RadarChart>
           </ResponsiveContainer>
@@ -296,11 +296,11 @@ export default function PlayerDashboard({ player }) {
               const v = s(d.key)
               const diff = v !== null ? v - d.ref : null
               return (
-                <div key={d.label} className="bg-[#050a07] border border-[#162318] rounded-xl p-3 text-center">
+                <div key={d.label} className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-center">
                   <p className="label-xs mb-1">{d.label}</p>
                   <p className="font-display text-2xl font-bold text-white">{fmt(v, 2)}</p>
                   {diff !== null && (
-                    <p className={`text-xs font-semibold mt-1 ${diff < 0 ? 'text-emerald-400' : diff === 0 ? 'text-gray-600' : 'text-red-400'}`}>
+                    <p className={`text-xs font-semibold mt-1 ${diff < 0 ? 'text-green-400' : diff === 0 ? 'text-zinc-600' : 'text-red-400'}`}>
                       {diff >= 0 ? '+' : ''}{diff.toFixed(2)}
                     </p>
                   )}
@@ -309,11 +309,11 @@ export default function PlayerDashboard({ player }) {
             })}
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2">
-            <div className="bg-[#050a07] border border-[#162318] rounded-lg p-3 text-center">
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-center">
               <p className="label-xs">Birdie Avg</p>
-              <p className="font-display text-xl font-bold text-emerald-400 mt-1">{fmt(s('birdieAvg'), 2)}</p>
+              <p className="font-display text-xl font-bold text-green-400 mt-1">{fmt(s('birdieAvg'), 2)}</p>
             </div>
-            <div className="bg-[#050a07] border border-[#162318] rounded-lg p-3 text-center">
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-center">
               <p className="label-xs">Bogey Avg</p>
               <p className="font-display text-xl font-bold text-red-400 mt-1">{fmt(s('bogeyAvg'), 2)}</p>
             </div>
@@ -325,7 +325,7 @@ export default function PlayerDashboard({ player }) {
       <div>
         <SectionHeading>Round Log</SectionHeading>
         <div className="card overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#162318]">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
             <span className="label-xs">
               {season !== 'all' ? season.charAt(0).toUpperCase() + season.slice(1) + ' · ' : ''}
               {rounds.length} rounds
@@ -333,7 +333,7 @@ export default function PlayerDashboard({ player }) {
             {rounds.length > 10 && (
               <button
                 onClick={() => setShowAllRounds(!showAllRounds)}
-                className="text-xs text-emerald-600 hover:text-emerald-400 transition-colors"
+                className="text-xs text-green-500 hover:text-green-400 transition-colors"
               >
                 {showAllRounds ? 'Show recent' : `Show all ${rounds.length}`}
               </button>
@@ -342,7 +342,7 @@ export default function PlayerDashboard({ player }) {
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-[#162318]">
+                <tr className="border-b border-zinc-800">
                   {['Date', 'Course', 'Type', 'Par', 'Score', 'SG Drv', 'SG App', 'SG SG', 'SG Putt', 'GIR', 'FW', 'Scr'].map(h => (
                     <th key={h} className="px-3 py-2.5 text-gray-700 font-medium text-center first:text-left whitespace-nowrap label-xs">
                       {h}

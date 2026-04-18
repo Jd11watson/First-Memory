@@ -3,18 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --color-bg:       #050a07;
-    --color-surface:  #0c1410;
-    --color-border:   #162318;
-    --color-border-hi:#1f3326;
-    --color-green:    #22c55e;
-    --color-green-dim:#16a34a;
-  }
-
   body {
-    background-color: var(--color-bg);
-    @apply text-gray-100 antialiased;
+    @apply bg-zinc-950 text-zinc-100 antialiased;
     font-family: 'Inter', system-ui, sans-serif;
   }
 
@@ -23,34 +13,23 @@
   }
 
   ::-webkit-scrollbar        { @apply w-1 h-1; }
-  ::-webkit-scrollbar-track  { background: var(--color-bg); }
-  ::-webkit-scrollbar-thumb  { @apply bg-gray-800 rounded-full; }
+  ::-webkit-scrollbar-track  { @apply bg-zinc-950; }
+  ::-webkit-scrollbar-thumb  { @apply bg-zinc-700 rounded-full; }
 }
 
 @layer components {
   .card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    @apply rounded-xl;
+    @apply bg-zinc-900 border border-zinc-800 rounded-xl;
   }
-  .card:hover {
-    border-color: var(--color-border-hi);
+  .card-hover {
+    @apply bg-zinc-900 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-colors;
   }
-  .tab-active {
-    background: var(--color-green-dim);
-    @apply text-white;
+  .label-xs {
+    @apply text-[11px] font-medium uppercase tracking-widest text-zinc-500;
+    font-family: 'Space Grotesk', sans-serif;
   }
-  .tab-inactive {
-    @apply text-gray-500 hover:text-gray-300;
-  }
-}
-
-@layer utilities {
-  .stat-pos  { @apply text-emerald-400; }
-  .stat-neg  { @apply text-red-400; }
-  .stat-neu  { @apply text-gray-400; }
-  .label-xs  {
-    @apply text-xs uppercase tracking-widest font-medium text-gray-500;
+  .section-title {
+    @apply text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3;
     font-family: 'Space Grotesk', sans-serif;
   }
 }

@@ -37,27 +37,27 @@ export function scoreToPar(score, par) {
 // For strokes gained: positive = green, negative = red
 // For scoring avg: lower = green
 export function sgColor(val) {
-  if (val === null) return 'text-gray-400'
-  if (val > 0.3) return 'text-emerald-400'
-  if (val > 0) return 'text-emerald-300'
+  if (val === null) return 'text-zinc-500'
+  if (val > 0.3) return 'text-green-400'
+  if (val > 0) return 'text-green-300'
   if (val > -0.3) return 'text-red-300'
   return 'text-red-400'
 }
 
 export function scoreColor(toPar) {
-  if (toPar === null) return 'text-gray-400'
-  if (toPar < -2) return 'text-emerald-400'
-  if (toPar < 0) return 'text-emerald-300'
-  if (toPar === 0) return 'text-gray-300'
+  if (toPar === null) return 'text-zinc-500'
+  if (toPar < -2) return 'text-green-400'
+  if (toPar < 0) return 'text-green-300'
+  if (toPar === 0) return 'text-zinc-400'
   if (toPar <= 2) return 'text-red-300'
   return 'text-red-400'
 }
 
 export function pctColor(val, higherIsBetter = true) {
-  if (val === null) return 'text-gray-400'
+  if (val === null) return 'text-zinc-500'
   const good = higherIsBetter ? val > 60 : val < 5
   const ok = higherIsBetter ? val > 40 : val < 10
-  if (good) return 'text-emerald-400'
+  if (good) return 'text-green-400'
   if (ok) return 'text-yellow-400'
   return 'text-red-400'
 }
