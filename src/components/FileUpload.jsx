@@ -13,7 +13,6 @@ export default function FileUpload({ onData }) {
     setError(null)
     try {
       const players = await parseWorkbook(file)
-      if (!players.length) throw new Error('No player data found. Check your sheet names match player names.')
       onData(players, file.name)
     } catch (e) {
       setError(e.message)
@@ -25,25 +24,20 @@ export default function FileUpload({ onData }) {
   function onDrop(e) {
     e.preventDefault()
     setDragging(false)
-    const file = e.dataTransfer.files[0]
-    handle(file)
+    handle(e.dataTransfer.files[0])
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="max-w-lg w-full text-center">
-        {/* Logo */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-emerald-600 flex items-center justify-center text-2xl">⛳</div>
-            <div className="text-left">
-              <h1 className="text-2xl font-extrabold text-white tracking-tight">Golf Analytics</h1>
-              <p className="text-xs text-emerald-400 uppercase tracking-widest font-medium">Team Dashboard</p>
-            </div>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: '#050a07' }}>
+      <div className="max-w-md w-full">
+
+        {/* Wordmark */}
+        <div className="flex items-center gap-3 mb-10">
+          <div className="w-10 h-10 rounded-full bg-emerald-900 ring-1 ring-emerald-700/50 flex items-center justify-center text-xl">⛳</div>
+          <div>
+            <h1 className="font-display text-xl font-bold text-white tracking-tight leading-none">Golf Analytics</h1>
+            <p className="text-[11px] text-emerald-700 uppercase tracking-widest font-display mt-0.5">Team Dashboard</p>
           </div>
-          <p className="text-gray-400 text-sm max-w-sm mx-auto">
-            Upload your team Excel file to unlock strokes gained trends, head-to-head comparisons, and drill-down stats for every player.
-          </p>
         </div>
 
         {/* Drop zone */}
@@ -52,11 +46,11 @@ export default function FileUpload({ onData }) {
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
           onClick={() => inputRef.current.click()}
-          className={`border-2 border-dashed rounded-2xl p-12 cursor-pointer transition-all select-none
-            ${dragging
-              ? 'border-emerald-400 bg-emerald-950/40'
-              : 'border-gray-700 hover:border-emerald-600 hover:bg-gray-900'
-            }`}
+          className={`rounded-2xl border-2 border-dashed p-12 text-center cursor-pointer transition-all select-none ${
+            dragging
+              ? 'border-emerald-600 bg-emerald-950/30'
+              : 'border-[#1f3326] hover:border-emerald-800 hover:bg-emerald-950/10'
+          }`}
         >
           <input
             ref={inputRef}
@@ -66,27 +60,27 @@ export default function FileUpload({ onData }) {
             onChange={e => handle(e.target.files[0])}
           />
           {loading ? (
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-10 h-10 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-              <p className="text-gray-400 text-sm">Parsing workbook…</p>
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+              <p className="text-gray-500 text-sm font-display">Parsing workbook…</p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3">
-              <div className="text-5xl">📊</div>
-              <p className="text-white font-semibold">Drop your Excel file here</p>
-              <p className="text-gray-500 text-sm">or tap to browse — .xlsx / .xls</p>
+              <div className="text-4xl opacity-60">📊</div>
+              <p className="font-display font-semibold text-gray-300 text-base">Drop your Excel file here</p>
+              <p className="text-gray-600 text-xs">or tap to browse · .xlsx / .xls</p>
             </div>
           )}
         </div>
 
         {error && (
-          <div className="mt-4 bg-red-950/50 border border-red-800 rounded-xl p-4 text-red-300 text-sm text-left">
-            <strong>Parse error:</strong> {error}
+          <div className="mt-4 border border-red-900/60 rounded-xl p-4 text-red-400 text-xs bg-red-950/20">
+            <strong className="font-display">Parse error:</strong> {error}
           </div>
         )}
 
-        <p className="mt-6 text-xs text-gray-600">
-          Data never leaves your device — all processing happens in your browser.
+        <p className="mt-6 text-center text-[11px] text-gray-800">
+          Data is processed entirely in your browser — never uploaded anywhere.
         </p>
       </div>
     </div>

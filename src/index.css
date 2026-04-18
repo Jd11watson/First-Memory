@@ -3,22 +3,54 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-bg:       #050a07;
+    --color-surface:  #0c1410;
+    --color-border:   #162318;
+    --color-border-hi:#1f3326;
+    --color-green:    #22c55e;
+    --color-green-dim:#16a34a;
+  }
+
   body {
-    @apply bg-gray-950 text-gray-100 antialiased;
+    background-color: var(--color-bg);
+    @apply text-gray-100 antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
   }
-  ::-webkit-scrollbar {
-    @apply w-1.5 h-1.5;
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   }
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-900;
+
+  ::-webkit-scrollbar        { @apply w-1 h-1; }
+  ::-webkit-scrollbar-track  { background: var(--color-bg); }
+  ::-webkit-scrollbar-thumb  { @apply bg-gray-800 rounded-full; }
+}
+
+@layer components {
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    @apply rounded-xl;
   }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-700 rounded-full;
+  .card:hover {
+    border-color: var(--color-border-hi);
+  }
+  .tab-active {
+    background: var(--color-green-dim);
+    @apply text-white;
+  }
+  .tab-inactive {
+    @apply text-gray-500 hover:text-gray-300;
   }
 }
 
 @layer utilities {
-  .stat-positive { @apply text-emerald-400; }
-  .stat-negative { @apply text-red-400; }
-  .stat-neutral  { @apply text-gray-300; }
+  .stat-pos  { @apply text-emerald-400; }
+  .stat-neg  { @apply text-red-400; }
+  .stat-neu  { @apply text-gray-400; }
+  .label-xs  {
+    @apply text-xs uppercase tracking-widest font-medium text-gray-500;
+    font-family: 'Space Grotesk', sans-serif;
+  }
 }
