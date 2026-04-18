@@ -2,6 +2,9 @@ import { useState, useMemo } from 'react'
 import SparklineCard from './SparklineCard'
 import TrendChart from './TrendChart'
 import InfoTooltip from './InfoTooltip'
+import InsightCallout from './InsightCallout'
+import AddRoundModal from './AddRoundModal'
+import ProComparison from './ProComparison'
 import { filterBySeason, fmt, fmtSG, fmtPct, sgColor, scoreColor, scoreToPar } from '../utils/stats'
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts'
 
@@ -93,9 +96,16 @@ function SectionHeading({ children }) {
   )
 }
 
-export default function PlayerDashboard({ player }) {
+export default function PlayerDashboard({ player, onRoundAdded }) {
   const [season, setSeason] = useState('all')
   const [showAllRounds, setShowAllRounds] = useState(false)
+  const [showAddRound, setShowAddRound] = useState(false)
+  const [showProComp, setShowProComp] = useState(false)
+
+  function handleSaveRound(round) {
+    onRoundAdded(round)
+    setShowAddRound(false)
+  }
 
   const rounds = useMemo(() => {
     const filtered = filterBySeason(player.roundLog ?? [], season)
@@ -141,7 +151,7 @@ export default function PlayerDashboard({ player }) {
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
       {/* ── Header ── */}
-      <div className="flex items-end justify-between flex-wrap gap-4 border-b border-zinc-800 pb-6">
+      <div className="flex items-start justify-between flex-wrap gap-4 border-b border-zinc-800 pb-6">
         <div>
           <p className="label-xs mb-1">Player</p>
           <h1 className="font-display text-4xl font-bold text-white tracking-tight">{player.name}</h1>
@@ -149,20 +159,28 @@ export default function PlayerDashboard({ player }) {
             {player.rounds ?? rounds.length} rounds recorded
           </p>
         </div>
-        <div className="flex gap-1 bg-zinc-900 border border-zinc-800 rounded-lg p-1">
-          {SEASONS.map(opt => (
-            <button
-              key={opt.id}
-              onClick={() => setSeason(opt.id)}
-              className={`px-4 py-1.5 rounded-md text-xs font-display font-semibold transition-all ${
-                season === opt.id ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-200'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Season filter */}
+          <div className="flex gap-1 bg-zinc-900 border border-zinc-800 rounded-lg p-1">
+            {SEASONS.map(opt => (
+              <button key={opt.id} onClick={() => setSeason(opt.id)}
+                className={`px-3 py-1.5 rounded-md text-xs font-display font-semibold transition-all ${
+                  season === opt.id ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-200'
+                }`}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          {/* Add round */}
+          <button onClick={() => setShowAddRound(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-display font-semibold transition-colors">
+            + Add Round
+          </button>
         </div>
       </div>
+
+      {/* ── Insight callout ── */}
+      <InsightCallout player={player} rounds={rounds} />
 
       {/* ── Hero numbers ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -321,6 +339,24 @@ export default function PlayerDashboard({ player }) {
         </div>
       </div>
 
+      {/* ── Pro comparison ── */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <SectionHeading>Compare to the Pros</SectionHeading>
+          <button
+            onClick={() => setShowProComp(v => !v)}
+            className={`text-xs font-display font-semibold px-3 py-1 rounded-lg border transition-all ${
+              showProComp
+                ? 'bg-zinc-800 border-zinc-600 text-white'
+                : 'border-zinc-800 text-zinc-600 hover:text-zinc-300 hover:border-zinc-600'
+            }`}
+          >
+            {showProComp ? 'Hide' : 'Show'}
+          </button>
+        </div>
+        {showProComp && <ProComparison player={player} avgStats={avg} />}
+      </div>
+
       {/* ── Round log ── */}
       <div>
         <SectionHeading>Round Log</SectionHeading>
@@ -365,6 +401,13 @@ export default function PlayerDashboard({ player }) {
         </div>
       </div>
 
+      {showAddRound && (
+        <AddRoundModal
+          playerName={player.name}
+          onSave={handleSaveRound}
+          onClose={() => setShowAddRound(false)}
+        />
+      )}
     </div>
   )
 }

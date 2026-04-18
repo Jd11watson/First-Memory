@@ -1,4 +1,4 @@
-export default function Navigation({ view, setView, players, selectedPlayer, setSelectedPlayer, onReset }) {
+export default function Navigation({ view, setView, players, selectedPlayer, setSelectedPlayer, onReset, hasSavedData }) {
   const views = [
     { id: 'team',    label: 'Team' },
     { id: 'player',  label: 'Player' },
@@ -50,7 +50,13 @@ export default function Navigation({ view, setView, players, selectedPlayer, set
           </div>
         )}
 
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-3">
+          {hasSavedData && (
+            <span className="hidden sm:flex items-center gap-1.5 text-[11px] text-zinc-600 font-display">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              Auto-saved
+            </span>
+          )}
           <button onClick={onReset} className="text-[11px] text-zinc-700 hover:text-zinc-500 transition-colors font-display">
             ↑ New file
           </button>
