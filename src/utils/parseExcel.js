@@ -73,15 +73,19 @@ function parseSummarySheet(ws) {
   }
 
   const players = []
+  const seen = new Set()
   for (let i = headerRowIdx + 1; i < rows.length; i++) {
     const row = rows[i]
     const name = String(row[0] ?? '').trim()
     if (!name) continue
-    // Accept exact match or any row whose first cell is a non-numeric string
-    // (so we don't require hard-coded name list)
     const isPlayer = PLAYER_NAMES.some(p => p.toLowerCase() === name.toLowerCase())
       || (isNaN(Number(name)) && name.length > 1 && name !== 'AVG' && name !== 'STD DEV')
     if (!isPlayer) continue
+    // Skip duplicates — the Summary sheet has an "All Data" section and a
+    // "Spring" section; only take the first (All Data) occurrence per player
+    const key = name.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
 
     players.push({
       name: PLAYER_NAMES.find(p => p.toLowerCase() === name.toLowerCase()) ?? name,
