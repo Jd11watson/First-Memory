@@ -26,7 +26,8 @@ export default function App() {
   const [seedSong, setSeedSong] = useState(null)
   const [recommendations, setRecommendations] = useState([])
   const [allSimilar, setAllSimilar] = useState([])
-  const [disliked, setDisliked] = useState(new Set())
+  // Cumulative set of all songs ever shown — persists across likes so recs never repeat
+  const [excluded, setExcluded] = useState(new Set())
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [history, setHistory] = useState([])
@@ -41,12 +42,12 @@ export default function App() {
     setStreaming(service)
   }
 
-  const fetchSimilar = useCallback(async (track, artist, currentDisliked = new Set()) => {
+  const fetchSimilar = useCallback(async (track, artist, currentExcluded = new Set()) => {
     if (!apiKey) return
     setLoading(true)
     setError('')
     try {
-      const url = `${LASTFM}/?method=track.getSimilar&track=${encodeURIComponent(track)}&artist=${encodeURIComponent(artist)}&limit=30&api_key=${apiKey}&format=json`
+      const url = `${LASTFM}/?method=track.getSimilar&track=${encodeURIComponent(track)}&artist=${encodeURIComponent(artist)}&limit=50&api_key=${apiKey}&format=json`
       const res = await fetch(url)
       const data = await res.json()
       if (data.error) {
@@ -61,7 +62,7 @@ export default function App() {
         return
       }
       setAllSimilar(tracks)
-      const filtered = tracks.filter(t => !currentDisliked.has(`${t.artist.name}::${t.name}`))
+      const filtered = tracks.filter(t => !currentExcluded.has(`${t.artist.name}::${t.name}`))
       setRecommendations(filtered.slice(0, 3))
     } catch {
       setError('Network error. Check your connection and API key.')
@@ -78,9 +79,11 @@ export default function App() {
     }
     setSeedSong(seed)
     setHistory([seed])
-    setDisliked(new Set())
+    const seedKey = `${song.artist}::${song.name}`
+    const newExcluded = new Set([seedKey])
+    setExcluded(newExcluded)
     setRecommendations([])
-    fetchSimilar(song.name, song.artist, new Set())
+    fetchSimilar(song.name, song.artist, newExcluded)
   }
 
   const handleLike = async (song) => {
@@ -92,17 +95,21 @@ export default function App() {
     }
     setSeedSong(newSeed)
     setHistory(prev => [...prev, newSeed])
-    const newDisliked = new Set()
-    setDisliked(newDisliked)
+    // Add the liked song + all currently shown recs to excluded so they never reappear
+    const newExcluded = new Set(excluded)
+    newExcluded.add(`${song.artist.name}::${song.name}`)
+    if (seedSong) newExcluded.add(`${seedSong.artist}::${seedSong.name}`)
+    recommendations.forEach(r => newExcluded.add(`${r.artist.name}::${r.name}`))
+    setExcluded(newExcluded)
     setRecommendations([])
-    fetchSimilar(song.name, song.artist.name, newDisliked)
+    fetchSimilar(song.name, song.artist.name, newExcluded)
   }
 
   const handleDislike = (song) => {
     const key = `${song.artist.name}::${song.name}`
-    const newDisliked = new Set([...disliked, key])
-    setDisliked(newDisliked)
-    const filtered = allSimilar.filter(t => !newDisliked.has(`${t.artist.name}::${t.name}`))
+    const newExcluded = new Set([...excluded, key])
+    setExcluded(newExcluded)
+    const filtered = allSimilar.filter(t => !newExcluded.has(`${t.artist.name}::${t.name}`))
     setRecommendations(filtered.slice(0, 3))
   }
 

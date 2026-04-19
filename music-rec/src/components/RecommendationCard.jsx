@@ -18,14 +18,18 @@ function SpotifyIcon() {
 
 async function fetchAppleUrl(track, artist) {
   try {
-    const q = encodeURIComponent(`${artist} ${track}`)
-    const res = await fetch(`https://itunes.apple.com/search?term=${q}&media=music&entity=song&limit=1`)
+    const q = encodeURIComponent(`${track} ${artist}`)
+    const res = await fetch(`https://itunes.apple.com/search?term=${q}&media=music&entity=song&limit=5`)
     const data = await res.json()
-    const r = data.results?.[0]
-    if (!r) return {}
+    if (!data.results?.length) return {}
+    // Prefer a result whose artist name closely matches
+    const norm = artist.toLowerCase()
+    const best = data.results.find(r =>
+      r.artistName?.toLowerCase().includes(norm) || norm.includes(r.artistName?.toLowerCase())
+    ) || data.results[0]
     return {
-      url: r.trackViewUrl,
-      artwork: r.artworkUrl100?.replace('100x100bb', '600x600bb'),
+      url: best.trackViewUrl,
+      artwork: best.artworkUrl100?.replace('100x100bb', '600x600bb'),
     }
   } catch {
     return {}
@@ -50,7 +54,6 @@ export default function RecommendationCard({ song, streaming, onLike, onDislike 
   const artwork = appleData?.artwork || lastfmImage
   const matchPct = song.match ? Math.round(song.match * 100) : null
 
-  const appleUrl = appleData?.url || `https://music.apple.com/search?term=${encodeURIComponent(`${song.artist.name} ${song.name}`)}`
   const spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(`${song.artist.name} ${song.name}`)}`
 
   const handleLike = () => {
@@ -90,10 +93,17 @@ export default function RecommendationCard({ song, streaming, onLike, onDislike 
 
       <div className="rec-actions">
         {(streaming === 'apple' || streaming === 'both') && (
-          <a href={appleUrl} className="stream-btn apple-stream" target="_blank" rel="noopener noreferrer">
-            <AppleMusicIcon />
-            <span>Apple Music</span>
-          </a>
+          appleData === null ? (
+            <span className="stream-btn apple-stream stream-loading">
+              <span className="btn-spin" />
+              <span>Apple Music</span>
+            </span>
+          ) : (
+            <a href={appleData.url} className="stream-btn apple-stream" target="_blank" rel="noopener noreferrer">
+              <AppleMusicIcon />
+              <span>Apple Music</span>
+            </a>
+          )
         )}
         {(streaming === 'spotify' || streaming === 'both') && (
           <a href={spotifyUrl} className="stream-btn spotify-stream" target="_blank" rel="noopener noreferrer">

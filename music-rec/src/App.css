@@ -514,6 +514,23 @@ body {
   background: var(--apple);
   color: #fff;
 }
+
+.stream-loading {
+  opacity: 0.55;
+  cursor: default;
+  pointer-events: none;
+}
+
+.btn-spin {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
 .spotify-stream {
   background: var(--spotify);
   color: #fff;
