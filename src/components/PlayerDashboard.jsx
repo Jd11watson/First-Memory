@@ -100,7 +100,7 @@ export default function PlayerDashboard({ player, onRoundAdded }) {
   const [season, setSeason] = useState('all')
   const [showAllRounds, setShowAllRounds] = useState(false)
   const [showAddRound, setShowAddRound] = useState(false)
-  const [showProComp, setShowProComp] = useState(false)
+  const [showProComp, setShowProComp] = useState(true)
 
   function handleSaveRound(round) {
     onRoundAdded(round)

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { STAT_META, fmtSG, fmtPct, fmt } from '../utils/stats'
+import InfoTooltip from './InfoTooltip'
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts'
 
 const PLAYER_COLORS = [
@@ -24,14 +25,33 @@ const COMPARE_STATS = [
   { key: 'par5',        label: 'Par 5 Avg',      lowerBetter: true  },
 ]
 
-const RADAR_STATS = [
-  { key: 'sgDriving',   label: 'Driving',    center: 0,  scale: 25 },
-  { key: 'sgApproach',  label: 'Approach',   center: 0,  scale: 25 },
-  { key: 'sgShortGame', label: 'Short Gm',   center: 0,  scale: 25 },
-  { key: 'sgPutting',   label: 'Putting',    center: 0,  scale: 25 },
-  { key: 'girPct',      label: 'GIR',        center: 50, scale: 1  },
-  { key: 'scrambling',  label: 'Scrambling', center: 50, scale: 1  },
+const RADAR_KEYS = [
+  { key: 'sgDriving',   label: 'Driving'    },
+  { key: 'sgApproach',  label: 'Approach'   },
+  { key: 'sgShortGame', label: 'Short Game' },
+  { key: 'sgPutting',   label: 'Putting'    },
+  { key: 'girPct',      label: 'GIR %'      },
+  { key: 'scrambling',  label: 'Scrambling' },
 ]
+
+// Normalise each stat to 15–85 using the actual spread across the selected players.
+// This avoids the clamping-to-zero issue when all SG values are negative.
+function buildRadarData(active) {
+  return RADAR_KEYS.map(({ key, label }) => {
+    const vals = active.map(p => p[key]).filter(v => v !== null && v !== undefined)
+    const min = vals.length ? Math.min(...vals) : 0
+    const max = vals.length ? Math.max(...vals) : 1
+    const range = max - min || 1
+    const entry = { stat: label }
+    active.forEach(p => {
+      const v = p[key]
+      entry[p.name] = v !== null && v !== undefined
+        ? Math.round(15 + ((v - min) / range) * 70)
+        : 15
+    })
+    return entry
+  })
+}
 
 function fmtVal(key, val) {
   if (val === null || val === undefined) return '—'
@@ -57,14 +77,7 @@ export default function ComparisonView({ players }) {
 
   const colorOf = name => PLAYER_COLORS[players.findIndex(p => p.name === name) % PLAYER_COLORS.length]
 
-  const radarData = RADAR_STATS.map(({ key, label, center, scale }) => {
-    const entry = { stat: label }
-    active.forEach(p => {
-      const v = p[key]
-      entry[p.name] = v !== null && v !== undefined ? Math.max(0, Math.min(100, center + v * scale)) : 50
-    })
-    return entry
-  })
+  const radarData = buildRadarData(active)
 
   const sgData = ['sgDriving', 'sgApproach', 'sgShortGame', 'sgPutting'].map((key, i) => {
     const entry = { stat: ['Driving', 'Approach', 'Short Gm', 'Putting'][i] }
@@ -100,7 +113,13 @@ export default function ComparisonView({ players }) {
       {/* Radar + SG bars */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-          <p className="section-title">Player Profiles</p>
+          <div className="flex items-center justify-between mb-3">
+            <p className="section-title mb-0">Player Profiles</p>
+            <InfoTooltip
+              title="How to read this chart"
+              body={"Each axis shows a different skill category. A larger shaded area means stronger overall performance.\n\nImportant: values are scaled relative to the players shown — the outermost ring is the best among those selected, not an absolute benchmark. Compare the shapes, not the size.\n\nUse it to spot:\n• Who dominates a specific category\n• Which areas show the widest gaps\n• Overall balance vs. a lopsided game"}
+            />
+          </div>
           <ResponsiveContainer width="100%" height={260}>
             <RadarChart data={radarData}>
               <PolarGrid stroke="#27272a" />
