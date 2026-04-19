@@ -4,7 +4,7 @@ import { PROS, COMPARE_STATS } from '../data/proStats'
 function gap(amateurVal, proVal, lowerBetter) {
   if (amateurVal === null || amateurVal === undefined || proVal === null) return null
   const diff = amateurVal - proVal
-  return lowerBetter ? diff : -diff // negative = amateur is worse
+  return lowerBetter ? diff : -diff // negative = amateur is better, positive = amateur is worse
 }
 
 function GapBar({ gapVal }) {
@@ -12,6 +12,7 @@ function GapBar({ gapVal }) {
   // clamp gap to ±3 strokes (or ±30pp for pct) — just visual scaling
   const pct = Math.max(0, Math.min(100, 50 - (gapVal / 3) * 50))
   const isGood = gapVal <= 0
+  const barColor = isGood ? '#4ade80' : gapVal <= 1 ? '#fbbf24' : '#f87171'
   return (
     <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
       <div
@@ -19,7 +20,7 @@ function GapBar({ gapVal }) {
         style={{
           width: `${Math.abs(50 - pct) * 2}%`,
           marginLeft: isGood ? '50%' : `${pct}%`,
-          background: isGood ? '#4ade80' : '#f87171',
+          background: barColor,
         }}
       />
     </div>
@@ -95,11 +96,11 @@ export default function ProComparison({ player, avgStats }) {
           const gapVal = gap(aVal, pVal, stat.lowerBetter)
 
           const gapStr = gapVal === null ? '—'
-            : (gapVal <= 0 ? '' : '+') + Number(gapVal).toFixed(gapVal % 1 === 0 ? 0 : 2)
+            : (gapVal > 0 ? '+' : '') + Number(gapVal).toFixed(Math.abs(gapVal) % 1 === 0 ? 0 : 2)
 
           const gapColor = gapVal === null ? 'text-zinc-700'
-            : gapVal <= -0.5 ? 'text-red-400'
             : gapVal <= 0 ? 'text-green-400'
+            : gapVal <= 1 ? 'text-amber-400'
             : 'text-red-400'
 
           return (
@@ -122,8 +123,7 @@ export default function ProComparison({ player, avgStats }) {
 
       <div className="px-5 py-3 border-t border-zinc-800">
         <p className="text-[11px] text-zinc-700 leading-relaxed">
-          Gap = amateur minus pro. Green = within range or better. Red bars show the distance to close.
-          SG values use the same zero-baseline; gap reflects raw difference in strokes gained per round.
+          Gap = difference vs. selected pro. Green = at or ahead of that benchmark. Amber = within 1 stroke/pp. Red = more than 1 stroke/pp behind.
         </p>
       </div>
     </div>
