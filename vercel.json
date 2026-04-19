@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd music-rec && npm install && npm run build",
+  "outputDirectory": "music-rec/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
