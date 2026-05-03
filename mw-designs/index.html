@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MW Designs — Interiors &amp; Remodels | Bryan / College Station, TX</title>
+  <meta name="description" content="MW Designs is a one-woman interior design and remodel studio led by Molly Watson, based in Bryan / College Station, Texas. Residential interiors, kitchens, baths, and full-home remodels.">
+  <meta property="og:title" content="MW Designs — Interiors &amp; Remodels by Molly Watson">
+  <meta property="og:description" content="A small studio with a careful hand. Interiors, remodels, and new construction in Bryan / College Station, TX.">
+  <meta property="og:image" content="assets/farmhouse.jpeg">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="assets/mw-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --bg:          #F5F0E6;
+      --paper:       #FAF6EE;
+      --ink:         #2A2620;
+      --ink-soft:    #5C5448;
+      --forest:      #1F3A2E;
+      --forest-deep: #152821;
+      --rule:        #D9CFB8;
+      --accent:      #9B8B6E;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Lora', serif;
+    }
+
+    img { display: block; max-width: 100%; }
+    a   { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; padding: 0; color: inherit; }
+    input, textarea { font: inherit; color: inherit; }
+
+    /* ─── NAV ─────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--bg);
+      transition: background 0.35s, padding 0.35s, backdrop-filter 0.35s;
+    }
+
+    .nav.scrolled {
+      background: rgba(21, 40, 33, 0.96);
+      backdrop-filter: blur(10px);
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+      margin: 0; padding: 0;
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .nav-links a { cursor: pointer; transition: opacity 0.2s; }
+    .nav-links a:hover { opacity: 0.65; }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 24px;
+      height: 1.5px;
+      background: currentColor;
+      transition: all 0.3s;
+    }
+
+    /* ─── HERO ────────────────────────────────────── */
+    .hero {
+      position: relative;
+      height: 100svh;
+      min-height: 640px;
+      overflow: hidden;
+      background: var(--forest-deep);
+    }
+
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1.4s ease-in-out;
+    }
+
+    .hero-slide.active { opacity: 1; }
+
+    .hero-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.78) saturate(0.95);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(21,40,33,0.55) 0%,
+        rgba(21,40,33,0.08) 35%,
+        rgba(21,40,33,0.72) 100%
+      );
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: absolute;
+      left: 48px;
+      bottom: 72px;
+      color: var(--bg);
+      max-width: 760px;
+    }
+
+    .hero-kicker {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0.9;
+    }
+
+    .hero-h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 104px;
+      line-height: 0.95;
+      font-weight: 400;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-h1 em { font-weight: 300; }
+
+    .hero-ctas {
+      margin-top: 36px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 16px 32px;
+      background: var(--bg);
+      color: var(--forest);
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: background 0.3s;
+    }
+
+    .btn-primary:hover { background: var(--paper); }
+
+    .btn-ghost-light {
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bg);
+      border-bottom: 1px solid rgba(245,240,230,0.5);
+      padding-bottom: 4px;
+      margin-left: 12px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-ghost-light:hover { opacity: 0.65; }
+
+    .hero-meta {
+      position: absolute;
+      right: 48px;
+      bottom: 60px;
+      color: var(--bg);
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-align: right;
+    }
+
+    .hero-caption {
+      font-style: italic;
+      opacity: 0.82;
+      margin-bottom: 14px;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-indicators {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .hero-counter { opacity: 0.65; margin-right: 12px; }
+
+    .hero-dot {
+      height: 1.5px;
+      background: var(--bg);
+      transition: all 0.4s;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .hero-dot.active  { width: 28px; opacity: 1; }
+    .hero-dot:not(.active) { width: 14px; opacity: 0.4; }
+
+    /* ─── MARQUEE ─────────────────────────────────── */
+    .marquee-strip {
+      background: var(--forest);
+      color: var(--bg);
+      padding: 20px 0;
+      overflow: hidden;
+      border-bottom: 1px solid var(--forest-deep);
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee-scroll 32s linear infinite;
+    }
+
+    .marquee-track:hover { animation-play-state: paused; }
+
+    .marquee-segment {
+      display: flex;
+      gap: 56px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-style: italic;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+      padding-right: 56px;
+    }
+
+    .marquee-segment span {
+      display: inline-flex;
+      align-items: center;
+      gap: 56px;
+    }
+
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ─── INTRO ───────────────────────────────────── */
+    .intro {
+      background: var(--bg);
+      padding: 120px 48px 100px;
+    }
+
+    .intro-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .intro-label {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--forest);
+      padding-top: 12px;
+      border-top: 1px solid var(--forest);
+      font-weight: 500;
+    }
+
+    .intro-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      line-height: 1.35;
+      font-weight: 400;
+      color: var(--ink);
+      margin: 0;
+      letter-spacing: -0.005em;
+    }
+
+    /* ─── GALLERY ─────────────────────────────────── */
+    .gallery {
+      background: var(--bg);
+      padding: 40px 48px 140px;
+    }
+
+    .gallery-inner { max-width: 1280px; margin: 0 auto; }
+
+    .gallery-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 56px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .gallery-kicker {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--forest);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .section-h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 72px;
+      font-weight: 400;
+      margin: 0;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      line-height: 1.0;
+    }
+
+    .link-underline {
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--forest);
+      border-bottom: 1px solid var(--forest);
+      padding-bottom: 4px;
+      transition: opacity 0.2s;
+    }
+
+    .link-underline:hover { opacity: 0.65; }
+
+    .gallery-row-1 {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 48px;
+      margin-bottom: 80px;
+    }
+
+    .gallery-row-1 figure:nth-child(2) { padding-top: 80px; }
+
+    .gallery-row-2 { margin-bottom: 80px; }
+
+    .gallery-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 80px;
+    }
+
+    .gallery-row-3 figure:nth-child(2) { padding-top: 96px; }
+
+    figure { margin: 0; }
+
+    .img-4-3  { aspect-ratio: 4/3;  overflow: hidden; }
+    .img-3-4  { aspect-ratio: 3/4;  overflow: hidden; }
+    .img-21-9 { aspect-ratio: 21/9; overflow: hidden; }
+
+    .img-4-3 img, .img-3-4 img, .img-21-9 img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.65s ease;
+    }
+
+    .img-4-3:hover img,
+    .img-3-4:hover img,
+    .img-21-9:hover img { transform: scale(1.04); }
+
+    figcaption {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    .fig-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      color: var(--ink);
+      margin-bottom: 4px;
+      line-height: 1.1;
+    }
+
+    .fig-meta {
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    .fig-tag {
+      font-family: 'Lora', serif;
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* ─── SERVICES ────────────────────────────────── */
+    .services {
+      background: var(--paper);
+      padding: 140px 48px;
+    }
+
+    .services-inner { max-width: 1280px; margin: 0 auto; }
+
+    .services-header {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 80px;
+      align-items: baseline;
+      margin-bottom: 80px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section-kicker {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--forest);
+      font-weight: 500;
+    }
+
+    .services-intro {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      line-height: 1.4;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin: 0;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+
+    .service-item {
+      padding-top: 28px;
+      border-top: 1px solid var(--forest);
+    }
+
+    .service-num {
+      font-family: 'Lora', serif;
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--forest);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .service-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 400;
+      margin: 0 0 16px;
+      color: var(--ink);
+      line-height: 1.1;
+      letter-spacing: -0.005em;
+    }
+
+    .service-desc {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      margin: 0;
+    }
+
+    /* ─── ABOUT ───────────────────────────────────── */
+    .about {
+      background: var(--bg);
+      padding: 140px 48px;
+    }
+
+    .about-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 96px;
+      align-items: center;
+    }
+
+    .about-portrait {
+      aspect-ratio: 4/5;
+      background: var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: var(--ink-soft);
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 14px;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .about-portrait img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .portrait-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .portrait-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 1px solid var(--ink-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+    }
+
+    .about-kicker {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--forest);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .about-h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 60px;
+      font-weight: 400;
+      margin: 0 0 32px;
+      color: var(--ink);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+
+    .about-body {
+      font-family: 'Lora', serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      max-width: 540px;
+    }
+
+    .about-body p { margin: 0 0 20px; }
+    .about-body p:last-child { margin: 0; }
+
+    .about-stats {
+      display: flex;
+      gap: 48px;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--rule);
+    }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      color: var(--forest);
+    }
+
+    .stat-label {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+
+    /* ─── PROCESS ─────────────────────────────────── */
+    .process {
+      background: var(--paper);
+      padding: 140px 48px;
+    }
+
+    .process-inner { max-width: 1280px; margin: 0 auto; }
+
+    .process-intro { margin-bottom: 80px; max-width: 720px; }
+    .process-intro .section-kicker { margin-bottom: 16px; }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+
+    .process-step {
+      padding-top: 32px;
+      border-top: 1px solid var(--forest);
+    }
+
+    .process-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      color: var(--forest);
+      letter-spacing: 0.2em;
+      margin-bottom: 32px;
+    }
+
+    .process-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      color: var(--ink);
+      margin-bottom: 16px;
+      line-height: 1.1;
+      font-weight: 400;
+    }
+
+    .process-desc {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      margin: 0;
+    }
+
+    /* ─── TESTIMONIALS ────────────────────────────── */
+    .testimonials {
+      background: var(--bg);
+      padding: 140px 48px;
+    }
+
+    .testimonials-inner { max-width: 1280px; margin: 0 auto; }
+
+    .testimonials-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 80px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .testimonials-note {
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      color: var(--ink-soft);
+      font-style: italic;
+      max-width: 320px;
+      line-height: 1.6;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 56px;
+    }
+
+    .quote-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 56px;
+      color: var(--forest);
+      line-height: 0.4;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    blockquote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      line-height: 1.4;
+      color: var(--ink);
+      font-style: italic;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    .testimonial-attr {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--rule);
+    }
+
+    .testimonial-name {
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .testimonial-detail {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-top: 3px;
+    }
+
+    /* ─── CONTACT ─────────────────────────────────── */
+    .contact {
+      background: var(--forest);
+      color: var(--bg);
+      padding: 140px 48px;
+    }
+
+    .contact-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 96px;
+    }
+
+    .contact-kicker {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0.7;
+    }
+
+    .contact-h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 64px;
+      font-weight: 400;
+      margin: 0 0 40px;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+
+    .contact-h2 em { font-weight: 300; }
+
+    .contact-body {
+      font-family: 'Lora', serif;
+      font-size: 16px;
+      line-height: 1.7;
+      opacity: 0.85;
+      max-width: 380px;
+      margin: 0 0 48px;
+    }
+
+    .contact-details {
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      line-height: 2;
+      opacity: 0.85;
+    }
+
+    .contact-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .contact-row-label {
+      width: 80px;
+      opacity: 0.55;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .contact-row a {
+      border-bottom: 1px solid rgba(245,240,230,0.25);
+      transition: opacity 0.2s;
+    }
+
+    .contact-row a:hover { opacity: 0.65; }
+
+    /* Form */
+    .contact-form { display: flex; flex-direction: column; }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 32px;
+    }
+
+    .form-label {
+      font-family: 'Lora', serif;
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      margin-bottom: 10px;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(245,240,230,0.22);
+      padding: 14px 0;
+      font-family: 'Lora', serif;
+      font-size: 16px;
+      color: var(--bg);
+      outline: none;
+      transition: border-color 0.3s;
+      -webkit-appearance: none;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus { border-bottom-color: rgba(245,240,230,0.7); }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: rgba(245,240,230,0.3); }
+
+    .form-textarea { resize: none; line-height: 1.55; }
+
+    .btn-submit {
+      margin-top: 40px;
+      align-self: flex-start;
+      padding: 18px 36px;
+      background: var(--bg);
+      color: var(--forest);
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    .btn-submit:hover:not(:disabled) { background: var(--paper); }
+    .btn-submit:disabled { opacity: 0.7; cursor: default; }
+
+    /* ─── FOOTER ──────────────────────────────────── */
+    .footer {
+      background: var(--forest-deep);
+      color: var(--bg);
+      padding: 64px 48px 36px;
+    }
+
+    .footer-inner { max-width: 1280px; margin: 0 auto; }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(245,240,230,0.12);
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .footer-tagline {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 15px;
+      opacity: 0.65;
+    }
+
+    .footer-cols {
+      display: flex;
+      gap: 64px;
+      font-family: 'Lora', serif;
+      font-size: 13px;
+    }
+
+    .footer-col-label {
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 12px;
+    }
+
+    .footer-col-links { line-height: 1.9; }
+    .footer-col-links a { display: block; transition: opacity 0.2s; }
+    .footer-col-links a:hover { opacity: 0.65; }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 28px;
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      opacity: 0.45;
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────── */
+    @media (max-width: 1100px) {
+      .hero-h1   { font-size: 80px; }
+      .section-h2 { font-size: 58px; }
+      .about-h2  { font-size: 50px; }
+      .contact-h2 { font-size: 52px; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .process-grid  { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    }
+
+    @media (max-width: 840px) {
+      .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+      .testimonials-grid figure:nth-child(3) { display: none; }
+      .footer-cols { gap: 32px; }
+    }
+
+    @media (max-width: 768px) {
+      /* Nav */
+      .nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        inset: 0;
+        background: rgba(21,40,33,0.98);
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        gap: 36px;
+        font-size: 18px;
+        letter-spacing: 0.2em;
+      }
+      .nav-toggle { display: flex; }
+
+      /* Hero */
+      .hero-content  { left: 24px; bottom: 80px; max-width: calc(100% - 48px); }
+      .hero-h1       { font-size: 52px; }
+      .hero-meta     { display: none; }
+      .hero-ctas     { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .btn-ghost-light { margin-left: 0; }
+
+      /* Marquee */
+      .marquee-segment { font-size: 18px; gap: 36px; }
+      .marquee-segment span { gap: 36px; }
+
+      /* Intro */
+      .intro { padding: 72px 24px 64px; }
+      .intro-inner { grid-template-columns: 1fr; gap: 28px; }
+      .intro-quote { font-size: 26px; }
+
+      /* Gallery */
+      .gallery { padding: 40px 24px 80px; }
+      .gallery-row-1 { grid-template-columns: 1fr; }
+      .gallery-row-1 figure:nth-child(2) { padding-top: 0; }
+      .gallery-row-3 { grid-template-columns: 1fr; }
+      .gallery-row-3 figure:nth-child(2) { padding-top: 0; }
+      .img-21-9 { aspect-ratio: 4/3; }
+      .section-h2 { font-size: 44px; }
+
+      /* Services */
+      .services { padding: 80px 24px; }
+      .services-header { grid-template-columns: 1fr; gap: 20px; }
+      .services-grid  { grid-template-columns: 1fr; }
+
+      /* About */
+      .about { padding: 80px 24px; }
+      .about-inner { grid-template-columns: 1fr; gap: 48px; }
+      .about-portrait { aspect-ratio: 3/2; }
+      .about-h2 { font-size: 40px; }
+      .about-stats { gap: 32px; }
+
+      /* Process */
+      .process { padding: 80px 24px; }
+      .process-grid { grid-template-columns: repeat(2, 1fr); }
+
+      /* Testimonials */
+      .testimonials { padding: 80px 24px; }
+      .testimonials-header { flex-direction: column; gap: 16px; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .testimonials-grid figure:nth-child(3) { display: block; }
+
+      /* Contact */
+      .contact { padding: 80px 24px; }
+      .contact-inner { grid-template-columns: 1fr; gap: 56px; }
+      .contact-h2 { font-size: 44px; }
+
+      /* Footer */
+      .footer { padding: 48px 24px 28px; }
+      .footer-top { flex-direction: column; gap: 36px; }
+      .footer-cols { gap: 28px; flex-wrap: wrap; }
+      .footer-bottom { flex-direction: column; gap: 6px; }
+    }
+
+    @media (max-width: 420px) {
+      .hero-h1  { font-size: 42px; }
+      .process-grid { grid-template-columns: 1fr; }
+      .about-stats { flex-wrap: wrap; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─────────────────────────────────────── -->
+  <nav class="nav" id="main-nav" aria-label="Main navigation">
+    <a class="nav-logo" href="#hero-section" aria-label="MW Designs — home">MW Designs</a>
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-links">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- ─── HERO ─────────────────────────────────────── -->
+  <section class="hero" id="hero-section" aria-label="Featured projects slideshow">
+    <div class="hero-slide active" id="slide-0">
+      <img src="assets/farmhouse.jpeg" alt="Hill Country Farmhouse — exterior" fetchpriority="high">
+    </div>
+    <div class="hero-slide" id="slide-1">
+      <img src="assets/exterior-double-door.jpeg" alt="No. 755 Residence — entry refresh" loading="lazy">
+    </div>
+    <div class="hero-slide" id="slide-2">
+      <img src="assets/master-bath.jpeg" alt="Stone &amp; Marble Bath — master suite" loading="lazy">
+    </div>
+    <div class="hero-slide" id="slide-3">
+      <img src="assets/exterior-1.jpeg" alt="Stonebridge House — exterior" loading="lazy">
+    </div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <p class="hero-kicker">Interiors &amp; Remodels — Bryan / College Station</p>
+      <h1 class="hero-h1">
+        Considered<br>
+        <em>spaces</em>, made to live in.
+      </h1>
+      <div class="hero-ctas">
+        <a class="btn-primary" href="#contact">Start a project →</a>
+        <a class="btn-ghost-light" href="#work">See the work</a>
+      </div>
+    </div>
+
+    <div class="hero-meta" aria-live="polite">
+      <p class="hero-caption" id="hero-caption">Hill Country Farmhouse · Exterior · 2025</p>
+      <div class="hero-indicators">
+        <span class="hero-counter" id="hero-counter" aria-hidden="true">01 / 04</span>
+        <button class="hero-dot active" data-slide="0" aria-label="Go to slide 1"></button>
+        <button class="hero-dot"        data-slide="1" aria-label="Go to slide 2"></button>
+        <button class="hero-dot"        data-slide="2" aria-label="Go to slide 3"></button>
+        <button class="hero-dot"        data-slide="3" aria-label="Go to slide 4"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MARQUEE ───────────────────────────────────── -->
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-track">
+      <!-- Two identical segments so the loop is seamless -->
+      <div class="marquee-segment">
+        <span>Whole-home interiors ✦</span>
+        <span>Kitchen &amp; bath remodels ✦</span>
+        <span>New construction ✦</span>
+        <span>Furniture &amp; finish sourcing ✦</span>
+        <span>Hospitality &amp; commercial ✦</span>
+        <span>Renovations ✦</span>
+      </div>
+      <div class="marquee-segment">
+        <span>Whole-home interiors ✦</span>
+        <span>Kitchen &amp; bath remodels ✦</span>
+        <span>New construction ✦</span>
+        <span>Furniture &amp; finish sourcing ✦</span>
+        <span>Hospitality &amp; commercial ✦</span>
+        <span>Renovations ✦</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── INTRO QUOTE ───────────────────────────────── -->
+  <section class="intro" aria-label="A note from Molly">
+    <div class="intro-inner">
+      <p class="intro-label">A note from Molly</p>
+      <p class="intro-quote">
+        I design rooms that feel like the people who live in them — layered, warm, and quietly confident. From a single bath to a whole-home remodel, the work is always about making a house behave the way <em>you</em> live.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─── GALLERY ───────────────────────────────────── -->
+  <section class="gallery" id="work" aria-label="Selected projects">
+    <div class="gallery-inner">
+      <div class="gallery-header">
+        <div>
+          <p class="gallery-kicker">Selected Work — 2024 / 2025</p>
+          <h2 class="section-h2">Featured projects</h2>
+        </div>
+        <a class="link-underline" href="#contact">View all →</a>
+      </div>
+
+      <!-- Row 1: wide (4:3) + portrait (3:4, offset down) -->
+      <div class="gallery-row-1">
+        <figure>
+          <div class="img-4-3">
+            <img src="assets/lounge-1.jpeg" alt="The Velvet Lounge — commercial hospitality" loading="lazy">
+          </div>
+          <figcaption>
+            <div>
+              <p class="fig-title">The Velvet Lounge</p>
+              <p class="fig-meta">Commercial · Hospitality</p>
+            </div>
+            <span class="fig-tag">Commercial</span>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="img-3-4">
+            <img src="assets/bath-2.jpeg" alt="The Garden Bath — powder room remodel" loading="lazy">
+          </div>
+          <figcaption>
+            <div>
+              <p class="fig-title">The Garden Bath</p>
+              <p class="fig-meta">Powder room · Remodel</p>
+            </div>
+            <span class="fig-tag">Remodel</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <!-- Row 2: full-width cinematic -->
+      <div class="gallery-row-2">
+        <figure>
+          <div class="img-21-9">
+            <img src="assets/master-bath.jpeg" alt="Stone &amp; Marble Bath — master suite" loading="lazy">
+          </div>
+          <figcaption>
+            <div>
+              <p class="fig-title">Stone &amp; Marble Bath</p>
+              <p class="fig-meta">Master suite · 2024</p>
+            </div>
+            <span class="fig-tag">Residential</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <!-- Row 3: two portraits (second offset down) -->
+      <div class="gallery-row-3">
+        <figure>
+          <div class="img-3-4">
+            <img src="assets/cafe-mustard.jpeg" alt="Mustard &amp; Globe Café — Bryan, TX" loading="lazy">
+          </div>
+          <figcaption>
+            <div>
+              <p class="fig-title">Mustard &amp; Globe Café</p>
+              <p class="fig-meta">Café · Bryan, TX</p>
+            </div>
+            <span class="fig-tag">Commercial</span>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="img-3-4">
+            <img src="assets/exterior-double-door.jpeg" alt="No. 755 Residence — exterior refresh" loading="lazy">
+          </div>
+          <figcaption>
+            <div>
+              <p class="fig-title">No. 755 Residence</p>
+              <p class="fig-meta">Exterior refresh · 2025</p>
+            </div>
+            <span class="fig-tag">Residential</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <!-- Row 4: closing cinematic -->
+      <figure>
+        <div class="img-21-9">
+          <img src="assets/exterior-1.jpeg" alt="Stonebridge House — whole-home, Texas" loading="lazy">
+        </div>
+        <figcaption>
+          <div>
+            <p class="fig-title">Stonebridge House</p>
+            <p class="fig-meta">Whole home · Texas</p>
+          </div>
+          <span class="fig-tag">Residential</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ─── SERVICES ─────────────────────────────────── -->
+  <section class="services" id="services" aria-label="Services">
+    <div class="services-inner">
+      <div class="services-header">
+        <div>
+          <p class="section-kicker" style="margin-bottom:12px;">Services</p>
+          <h2 class="section-h2">What I do.</h2>
+        </div>
+        <p class="services-intro">
+          A short list of how I work with clients — full-scope or single-room, residential or commercial. Every project is led by Molly from first walk-through to final styling.
+        </p>
+      </div>
+      <div class="services-grid">
+        <div class="service-item">
+          <p class="service-num">— 01</p>
+          <h3 class="service-title">Interior Design</h3>
+          <p class="service-desc">Whole-home interiors and single-room redesigns. Floor plans, palettes, furniture, art, and the small daily decisions.</p>
+        </div>
+        <div class="service-item">
+          <p class="service-num">— 02</p>
+          <h3 class="service-title">Renovations &amp; Remodels</h3>
+          <p class="service-desc">Kitchens, baths, gut remodels, and additions. I work alongside your contractor — or bring in mine.</p>
+        </div>
+        <div class="service-item">
+          <p class="service-num">— 03</p>
+          <h3 class="service-title">New Construction</h3>
+          <p class="service-desc">Architectural finishes, layout review, and interior selections from foundation through final styling.</p>
+        </div>
+        <div class="service-item">
+          <p class="service-num">— 04</p>
+          <h3 class="service-title">Furniture &amp; Sourcing</h3>
+          <p class="service-desc">Curated procurement for furniture, lighting, rugs, and finishes — vendor coordination and delivery management.</p>
+        </div>
+        <div class="service-item">
+          <p class="service-num">— 05</p>
+          <h3 class="service-title">Hospitality &amp; Commercial</h3>
+          <p class="service-desc">A few projects each year. Boutique restaurants, hotels, and small offices that want to feel like a home.</p>
+        </div>
+        <div class="service-item">
+          <p class="service-num">— 06</p>
+          <h3 class="service-title">Styling &amp; Finishing</h3>
+          <p class="service-desc">Bring an existing space across the line — art, accessories, layered details, and a final styling day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ABOUT ─────────────────────────────────────── -->
+  <section class="about" id="about" aria-label="About Molly Watson">
+    <div class="about-inner">
+      <div class="about-portrait" aria-label="Portrait of Molly Watson">
+        <!-- Replace this placeholder with: <img src="assets/molly-portrait.jpg" alt="Molly Watson"> -->
+        <div class="portrait-placeholder">
+          <div class="portrait-icon">MW</div>
+          <span style="font-family:'Lora',serif;font-style:italic;font-size:14px;color:var(--ink-soft);">Portrait of Molly</span>
+        </div>
+      </div>
+      <div>
+        <p class="about-kicker">About — Molly Watson</p>
+        <h2 class="about-h2">A small studio with<br>a careful hand.</h2>
+        <div class="about-body">
+          <p>MW Designs is a one-woman studio led by Molly Watson, based in Bryan / College Station, Texas. The work spans residential interiors, full-home remodels, and a handful of commercial projects each year — always small, always considered.</p>
+          <p>Every project gets Molly's attention from first walk-through to final styling. No account managers, no junior designers. Just a careful eye and a long, useful conversation about how you want to live.</p>
+        </div>
+        <div class="about-stats">
+          <div>
+            <p class="stat-num">12+</p>
+            <p class="stat-label">Years designing</p>
+          </div>
+          <div>
+            <p class="stat-num">60+</p>
+            <p class="stat-label">Homes completed</p>
+          </div>
+          <div>
+            <p class="stat-num">BCS</p>
+            <p class="stat-label">Based in Texas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROCESS ───────────────────────────────────── -->
+  <section class="process" id="process" aria-label="How a project works">
+    <div class="process-inner">
+      <div class="process-intro">
+        <p class="section-kicker">Process</p>
+        <h2 class="section-h2" style="margin-top:16px;">How a project unfolds.</h2>
+      </div>
+      <div class="process-grid">
+        <div class="process-step">
+          <p class="process-num">01</p>
+          <p class="process-title">Conversation</p>
+          <p class="process-desc">We meet at your place — coffee, walk-through, and a long conversation about how the space should feel and function.</p>
+        </div>
+        <div class="process-step">
+          <p class="process-num">02</p>
+          <p class="process-title">Concept</p>
+          <p class="process-desc">I return with a focused direction: palette, materials, and a few pieces of furniture pinned down. No mood-board overwhelm.</p>
+        </div>
+        <div class="process-step">
+          <p class="process-num">03</p>
+          <p class="process-title">Plans &amp; Sourcing</p>
+          <p class="process-desc">Specifications, drawings, vendor coordination. I handle the procurement, contractors, and the small daily decisions.</p>
+        </div>
+        <div class="process-step">
+          <p class="process-num">04</p>
+          <p class="process-title">Install &amp; Style</p>
+          <p class="process-desc">Delivery week. Furniture in, art hung, last details. I leave the house ready to live in — not staged.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TESTIMONIALS ──────────────────────────────── -->
+  <section class="testimonials" id="testimonials" aria-label="Client testimonials">
+    <div class="testimonials-inner">
+      <div class="testimonials-header">
+        <div>
+          <p class="section-kicker" style="margin-bottom:12px;">Kind words</p>
+          <h2 class="section-h2">From clients.</h2>
+        </div>
+        <p class="testimonials-note">A small selection. Full references available on request.</p>
+      </div>
+      <div class="testimonials-grid">
+        <figure>
+          <div class="quote-mark" aria-hidden="true">"</div>
+          <blockquote>Molly listened more than she talked, and the house came back exactly the way we lived in it — only better. We still notice small choices a year later.</blockquote>
+          <figcaption class="testimonial-attr">
+            <p class="testimonial-name">Sarah &amp; James K.</p>
+            <p class="testimonial-detail">Whole-home remodel, College Station</p>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="quote-mark" aria-hidden="true">"</div>
+          <blockquote>She made our café feel like somewhere people want to stay. Every detail, from the curtains to the cups, was hers. Sales went up the week we reopened.</blockquote>
+          <figcaption class="testimonial-attr">
+            <p class="testimonial-name">Olivia M.</p>
+            <p class="testimonial-detail">Café owner, Bryan</p>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="quote-mark" aria-hidden="true">"</div>
+          <blockquote>The bath was small and we were nervous about going bold. Molly was right — it's now the favorite room in the house. Guests photograph it.</blockquote>
+          <figcaption class="testimonial-attr">
+            <p class="testimonial-name">Caroline W.</p>
+            <p class="testimonial-detail">Powder room, Brazos Valley</p>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ───────────────────────────────────── -->
+  <section class="contact" id="contact" aria-label="Contact Molly Watson">
+    <div class="contact-inner">
+      <div>
+        <p class="contact-kicker">Get in touch</p>
+        <h2 class="contact-h2">Tell me about<br><em>your space.</em></h2>
+        <p class="contact-body">New projects, remodels, or a single tricky room. Send a note with what you're thinking — I read every email myself.</p>
+        <div class="contact-details">
+          <div class="contact-row">
+            <span class="contact-row-label">Email</span>
+            <a href="mailto:Molly@mollywatsondesigns.com">Molly@mollywatsondesigns.com</a>
+          </div>
+          <div class="contact-row">
+            <span class="contact-row-label">Phone</span>
+            <a href="tel:+19794504223">(979) 450-4223</a>
+          </div>
+          <div class="contact-row">
+            <span class="contact-row-label">Studio</span>
+            <span>Bryan / College Station, TX</span>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form" id="contact-form" novalidate aria-label="Project inquiry form">
+        <div class="form-field">
+          <label class="form-label" for="field-name">Your name</label>
+          <input class="form-input" id="field-name" name="name" type="text" autocomplete="name" required placeholder="Jane Smith">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="field-email">Email</label>
+          <input class="form-input" id="field-email" name="email" type="email" autocomplete="email" required placeholder="jane@example.com">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="field-message">About your project</label>
+          <textarea class="form-textarea" id="field-message" name="message" rows="4" required placeholder="Tell Molly about the space, what you're hoping to do, and any timing you have in mind."></textarea>
+        </div>
+        <button type="submit" class="btn-submit" id="submit-btn">Send a note →</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ────────────────────────────────────── -->
+  <footer class="footer" aria-label="Site footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <p class="footer-brand">MW Designs</p>
+          <p class="footer-tagline">Interiors &amp; remodels by Molly Watson.</p>
+        </div>
+        <div class="footer-cols">
+          <div>
+            <p class="footer-col-label">Reach</p>
+            <div class="footer-col-links">
+              <a href="mailto:Molly@mollywatsondesigns.com">Molly@mollywatsondesigns.com</a>
+              <a href="tel:+19794504223">(979) 450-4223</a>
+            </div>
+          </div>
+          <div>
+            <p class="footer-col-label">Studio</p>
+            <div class="footer-col-links" style="line-height:1.9;">
+              Bryan / College Station<br>Texas
+            </div>
+          </div>
+          <div>
+            <p class="footer-col-label">Follow</p>
+            <div class="footer-col-links">
+              <!-- Update these hrefs when Instagram/Pinterest handles are ready -->
+              <a href="#" aria-label="Instagram">Instagram</a>
+              <a href="#" aria-label="Pinterest">Pinterest</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 MW Designs. All rights reserved.</span>
+        <span>Made with care in Texas.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Hero slideshow ──────────────────────────────── */
+    const SLIDES = [
+      { el: document.getElementById('slide-0'), caption: 'Hill Country Farmhouse · Exterior · 2025' },
+      { el: document.getElementById('slide-1'), caption: 'No. 755 Residence · Entry refresh · 2025' },
+      { el: document.getElementById('slide-2'), caption: 'Stone & Marble Bath · Master suite · 2024' },
+      { el: document.getElementById('slide-3'), caption: 'Stonebridge House · Exterior · 2024' },
+    ];
+
+    let current = 0;
+    const captionEl = document.getElementById('hero-caption');
+    const counterEl = document.getElementById('hero-counter');
+    const dots = document.querySelectorAll('.hero-dot');
+    let timer = null;
+
+    function goTo(n) {
+      SLIDES[current].el.classList.remove('active');
+      dots[current].classList.remove('active');
+      current = (n + SLIDES.length) % SLIDES.length;
+      SLIDES[current].el.classList.add('active');
+      dots[current].classList.add('active');
+      captionEl.textContent = SLIDES[current].caption;
+      counterEl.textContent =
+        String(current + 1).padStart(2, '0') + ' / ' +
+        String(SLIDES.length).padStart(2, '0');
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => goTo(current + 1), 5200);
+    }
+
+    startTimer();
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        goTo(Number(dot.dataset.slide));
+        startTimer();
+      });
+    });
+
+    const heroEl = document.getElementById('hero-section');
+    heroEl.addEventListener('mouseenter', () => clearInterval(timer));
+    heroEl.addEventListener('mouseleave', startTimer);
+
+    /* ── Sticky nav ──────────────────────────────────── */
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ── Mobile nav toggle ───────────────────────────── */
+    const toggle    = document.getElementById('nav-toggle');
+    const navLinks  = document.getElementById('nav-links');
+
+    toggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open navigation menu');
+        document.body.style.overflow = '';
+      });
+    });
+
+    /* ── Contact form → mailto ───────────────────────── */
+    document.getElementById('contact-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name    = this.querySelector('[name="name"]').value.trim();
+      const email   = this.querySelector('[name="email"]').value.trim();
+      const message = this.querySelector('[name="message"]').value.trim();
+      if (!name || !email || !message) return;
+
+      const subject = encodeURIComponent('Project inquiry from ' + name);
+      const body    = encodeURIComponent(
+        'Name: '  + name  + '\n' +
+        'Email: ' + email + '\n\n' +
+        message
+      );
+
+      const btn = document.getElementById('submit-btn');
+      btn.textContent = 'Note received — thank you';
+      btn.disabled = true;
+
+      window.location.href =
+        'mailto:Molly@mollywatsondesigns.com?subject=' + subject + '&body=' + body;
+
+      setTimeout(() => {
+        btn.textContent = 'Send a note →';
+        btn.disabled = false;
+        this.reset();
+      }, 3500);
+    });
+  </script>
+</body>
+</html>
