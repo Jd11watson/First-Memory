@@ -1003,18 +1003,17 @@
   </nav>
 
   <!-- ─── HERO ─────────────────────────────────────── -->
-  <section class="hero" id="hero-section" aria-label="Featured projects slideshow">
-    <div class="hero-slide active" id="slide-0">
-      <img src="assets/farmhouse.jpeg" alt="Hill Country Farmhouse — exterior" fetchpriority="high">
+  <!--
+    SLIDESHOW GUIDE: To add more slides, duplicate a hero-slide div below and
+    set data-caption="Your label here" to show a caption on that slide.
+    Add a matching hero-dot button for each slide, then update SLIDES in the JS.
+  -->
+  <section class="hero" id="hero-section" aria-label="Featured work">
+    <div class="hero-slide active" id="slide-0" data-caption="">
+      <img src="assets/farmhouse.jpeg" alt="Exterior" fetchpriority="high">
     </div>
-    <div class="hero-slide" id="slide-1">
-      <img src="assets/exterior-double-door.jpeg" alt="No. 755 Residence — entry refresh" loading="lazy">
-    </div>
-    <div class="hero-slide" id="slide-2">
-      <img src="assets/master-bath.jpeg" alt="Stone &amp; Marble Bath — master suite" loading="lazy">
-    </div>
-    <div class="hero-slide" id="slide-3">
-      <img src="assets/exterior-1.jpeg" alt="Stonebridge House — exterior" loading="lazy">
+    <div class="hero-slide" id="slide-1" data-caption="">
+      <img src="assets/exterior-double-door.jpeg" alt="Entry" loading="lazy">
     </div>
     <div class="hero-overlay" aria-hidden="true"></div>
 
@@ -1031,13 +1030,11 @@
     </div>
 
     <div class="hero-meta" aria-live="polite">
-      <p class="hero-caption" id="hero-caption">Hill Country Farmhouse · Exterior · 2025</p>
+      <!-- Caption: shown automatically when data-caption is non-empty -->
+      <p class="hero-caption" id="hero-caption"></p>
       <div class="hero-indicators">
-        <span class="hero-counter" id="hero-counter" aria-hidden="true">01 / 04</span>
         <button class="hero-dot active" data-slide="0" aria-label="Go to slide 1"></button>
         <button class="hero-dot"        data-slide="1" aria-label="Go to slide 2"></button>
-        <button class="hero-dot"        data-slide="2" aria-label="Go to slide 3"></button>
-        <button class="hero-dot"        data-slide="3" aria-label="Go to slide 4"></button>
       </div>
     </div>
   </section>
@@ -1064,16 +1061,16 @@
         <a class="link-underline" href="#contact">View all →</a>
       </div>
 
-      <!-- Row 1: wide (4:3) + portrait (3:4, offset down) -->
+      <!-- Row 1: wide + portrait offset -->
       <div class="gallery-row-1">
         <figure>
           <div class="img-4-3">
-            <img src="assets/lounge-1.jpeg" alt="Hospitality interior" loading="lazy">
+            <img src="assets/lounge-deco.jpeg" alt="Interior lounge" loading="lazy">
           </div>
         </figure>
         <figure>
           <div class="img-3-4">
-            <img src="assets/bath-2.jpeg" alt="Powder room remodel" loading="lazy">
+            <img src="assets/bath-2.jpeg" alt="Bath remodel" loading="lazy">
           </div>
         </figure>
       </div>
@@ -1082,12 +1079,12 @@
       <div class="gallery-row-2">
         <figure>
           <div class="img-21-9">
-            <img src="assets/master-bath.jpeg" alt="Master bath" loading="lazy">
+            <img src="assets/farmhouse.jpeg" alt="Exterior" loading="lazy">
           </div>
         </figure>
       </div>
 
-      <!-- Row 3: two portraits (second offset down) -->
+      <!-- Row 3: two portraits offset -->
       <div class="gallery-row-3">
         <figure>
           <div class="img-3-4">
@@ -1096,17 +1093,47 @@
         </figure>
         <figure>
           <div class="img-3-4">
-            <img src="assets/exterior-double-door.jpeg" alt="Residential exterior" loading="lazy">
+            <img src="assets/marble-vanity.jpeg" alt="Marble vanity detail" loading="lazy">
           </div>
         </figure>
       </div>
 
-      <!-- Row 4: closing cinematic -->
-      <figure>
-        <div class="img-21-9">
-          <img src="assets/exterior-1.jpeg" alt="Residential exterior" loading="lazy">
-        </div>
-      </figure>
+      <!-- Row 4: full-width cinematic -->
+      <div class="gallery-row-2">
+        <figure>
+          <div class="img-21-9">
+            <img src="assets/master-bath.jpeg" alt="Master bath" loading="lazy">
+          </div>
+        </figure>
+      </div>
+
+      <!-- Row 5: wide + portrait offset -->
+      <div class="gallery-row-1">
+        <figure>
+          <div class="img-4-3">
+            <img src="assets/exterior-double-door.jpeg" alt="Exterior entry" loading="lazy">
+          </div>
+        </figure>
+        <figure>
+          <div class="img-3-4">
+            <img src="assets/green-tile-bath.jpeg" alt="Green tile bath" loading="lazy">
+          </div>
+        </figure>
+      </div>
+
+      <!-- Row 6: two portraits offset -->
+      <div class="gallery-row-3">
+        <figure>
+          <div class="img-3-4">
+            <img src="assets/bath-1.jpeg" alt="Bath interior" loading="lazy">
+          </div>
+        </figure>
+        <figure>
+          <div class="img-3-4">
+            <img src="assets/exterior-1.jpeg" alt="Residential exterior" loading="lazy">
+          </div>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -1161,7 +1188,7 @@
   <section class="about" id="about" aria-label="About Molly Watson">
     <div class="about-inner">
       <div class="about-portrait" aria-label="Portrait of Molly Watson">
-        <img src="assets/molly-portrait.jpeg" alt="Molly Watson, MW Designs">
+        <img src="assets/Molly-portrait.JPEG" alt="Molly Watson, MW Designs">
       </div>
       <div>
         <p class="about-kicker">About — Molly Watson</p>
@@ -1220,44 +1247,6 @@
     </div>
   </section>
 
-  <!-- ─── TESTIMONIALS ──────────────────────────────── -->
-  <section class="testimonials" id="testimonials" aria-label="Client testimonials">
-    <div class="testimonials-inner">
-      <div class="testimonials-header">
-        <div>
-          <p class="section-kicker" style="margin-bottom:12px;">Kind words</p>
-          <h2 class="section-h2">From clients.</h2>
-        </div>
-        <p class="testimonials-note">A small selection. Full references available on request.</p>
-      </div>
-      <div class="testimonials-grid">
-        <figure>
-          <div class="quote-mark" aria-hidden="true">"</div>
-          <blockquote>Molly listened more than she talked, and the house came back exactly the way we lived in it — only better. We still notice small choices a year later.</blockquote>
-          <figcaption class="testimonial-attr">
-            <p class="testimonial-name">Sarah &amp; James K.</p>
-            <p class="testimonial-detail">Whole-home remodel, College Station</p>
-          </figcaption>
-        </figure>
-        <figure>
-          <div class="quote-mark" aria-hidden="true">"</div>
-          <blockquote>She made our café feel like somewhere people want to stay. Every detail, from the curtains to the cups, was hers. Sales went up the week we reopened.</blockquote>
-          <figcaption class="testimonial-attr">
-            <p class="testimonial-name">Olivia M.</p>
-            <p class="testimonial-detail">Café owner, Bryan</p>
-          </figcaption>
-        </figure>
-        <figure>
-          <div class="quote-mark" aria-hidden="true">"</div>
-          <blockquote>The bath was small and we were nervous about going bold. Molly was right — it's now the favorite room in the house. Guests photograph it.</blockquote>
-          <figcaption class="testimonial-attr">
-            <p class="testimonial-name">Caroline W.</p>
-            <p class="testimonial-detail">Powder room, Brazos Valley</p>
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
 
   <!-- ─── CONTACT ───────────────────────────────────── -->
   <section class="contact" id="contact" aria-label="Contact Molly Watson">
@@ -1341,29 +1330,24 @@
 
   <script>
     /* ── Hero slideshow ──────────────────────────────── */
-    const SLIDES = [
-      { el: document.getElementById('slide-0'), caption: 'Hill Country Farmhouse · Exterior · 2025' },
-      { el: document.getElementById('slide-1'), caption: 'No. 755 Residence · Entry refresh · 2025' },
-      { el: document.getElementById('slide-2'), caption: 'Stone & Marble Bath · Master suite · 2024' },
-      { el: document.getElementById('slide-3'), caption: 'Stonebridge House · Exterior · 2024' },
-    ];
-
+    // To add a caption to any slide, set data-caption="Your label" on the slide div.
+    const slideEls = document.querySelectorAll('.hero-slide');
+    const SLIDES = Array.from(slideEls);
     let current = 0;
     const captionEl = document.getElementById('hero-caption');
-    const counterEl = document.getElementById('hero-counter');
     const dots = document.querySelectorAll('.hero-dot');
     let timer = null;
 
     function goTo(n) {
-      SLIDES[current].el.classList.remove('active');
+      SLIDES[current].classList.remove('active');
       dots[current].classList.remove('active');
       current = (n + SLIDES.length) % SLIDES.length;
-      SLIDES[current].el.classList.add('active');
+      SLIDES[current].classList.add('active');
       dots[current].classList.add('active');
-      captionEl.textContent = SLIDES[current].caption;
-      counterEl.textContent =
-        String(current + 1).padStart(2, '0') + ' / ' +
-        String(SLIDES.length).padStart(2, '0');
+      // Show caption only when data-caption is non-empty
+      const cap = SLIDES[current].dataset.caption || '';
+      captionEl.textContent = cap;
+      captionEl.style.display = cap ? '' : 'none';
     }
 
     function startTimer() {
@@ -1371,6 +1355,7 @@
       timer = setInterval(() => goTo(current + 1), 5200);
     }
 
+    goTo(0);
     startTimer();
 
     dots.forEach(dot => {
