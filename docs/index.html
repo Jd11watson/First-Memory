@@ -108,16 +108,9 @@
       background: var(--forest-deep);
     }
 
-    .hero-slide {
+    .hero-img {
       position: absolute;
       inset: 0;
-      opacity: 0;
-      transition: opacity 1.4s ease-in-out;
-    }
-
-    .hero-slide.active { opacity: 1; }
-
-    .hero-slide img {
       width: 100%; height: 100%;
       object-fit: cover;
     }
@@ -197,44 +190,6 @@
 
     .btn-ghost-light:hover { opacity: 0.65; }
 
-    .hero-meta {
-      position: absolute;
-      right: 48px;
-      bottom: 60px;
-      color: var(--bg);
-      font-family: 'Lora', serif;
-      font-size: 12px;
-      letter-spacing: 0.18em;
-      text-align: right;
-    }
-
-    .hero-caption {
-      font-style: italic;
-      opacity: 0.82;
-      margin-bottom: 14px;
-      font-size: 13px;
-      letter-spacing: 0.02em;
-    }
-
-    .hero-indicators {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .hero-counter { opacity: 0.65; margin-right: 12px; }
-
-    .hero-dot {
-      height: 1.5px;
-      background: var(--bg);
-      transition: all 0.4s;
-      cursor: pointer;
-      outline: none;
-    }
-
-    .hero-dot.active  { width: 28px; opacity: 1; }
-    .hero-dot:not(.active) { width: 14px; opacity: 0.4; }
 
 
     /* ─── INTRO ───────────────────────────────────── */
@@ -499,6 +454,7 @@
     .about-portrait img {
       width: 100%; height: 100%;
       object-fit: cover;
+      object-position: top center;
     }
 
     .portrait-placeholder {
@@ -1003,20 +959,9 @@
   </nav>
 
   <!-- ─── HERO ─────────────────────────────────────── -->
-  <!--
-    SLIDESHOW GUIDE: To add more slides, duplicate a hero-slide div below and
-    set data-caption="Your label here" to show a caption on that slide.
-    Add a matching hero-dot button for each slide, then update SLIDES in the JS.
-  -->
   <section class="hero" id="hero-section" aria-label="Featured work">
-    <div class="hero-slide active" id="slide-0" data-caption="">
-      <img src="assets/farmhouse.jpeg" alt="Exterior" fetchpriority="high">
-    </div>
-    <div class="hero-slide" id="slide-1" data-caption="">
-      <img src="assets/exterior-double-door.jpeg" alt="Entry" loading="lazy">
-    </div>
+    <img class="hero-img" src="assets/exterior-1.jpeg" alt="MW Designs project" fetchpriority="high">
     <div class="hero-overlay" aria-hidden="true"></div>
-
     <div class="hero-content">
       <p class="hero-kicker">Interiors &amp; Remodels — Bryan / College Station</p>
       <h1 class="hero-h1">
@@ -1028,15 +973,6 @@
         <a class="btn-ghost-light" href="#work">See the work</a>
       </div>
     </div>
-
-    <div class="hero-meta" aria-live="polite">
-      <!-- Caption: shown automatically when data-caption is non-empty -->
-      <p class="hero-caption" id="hero-caption"></p>
-      <div class="hero-indicators">
-        <button class="hero-dot active" data-slide="0" aria-label="Go to slide 1"></button>
-        <button class="hero-dot"        data-slide="1" aria-label="Go to slide 2"></button>
-      </div>
-    </div>
   </section>
 
 
@@ -1044,9 +980,12 @@
   <section class="intro" aria-label="A note from Molly">
     <div class="intro-inner">
       <p class="intro-label">A note from Molly</p>
-      <p class="intro-quote">
-        I design rooms that feel like the people who live in them — layered, warm, and quietly confident. From a single bath to a whole-home remodel, the work is always about making a house behave the way <em>you</em> live.
-      </p>
+      <div>
+        <p class="intro-quote">
+          "Have nothing in your house that you do not know to be useful or believe to be beautiful."
+        </p>
+        <p style="font-family:'Lora',serif;font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-top:24px;">— Quote by William Morris</p>
+      </div>
     </div>
   </section>
 
@@ -1058,7 +997,6 @@
           <p class="gallery-kicker">Selected Work — 2024 / 2025</p>
           <h2 class="section-h2">Featured projects</h2>
         </div>
-        <a class="link-underline" href="#contact">View all →</a>
       </div>
 
       <!-- Row 1: wide + portrait offset -->
@@ -1067,11 +1005,13 @@
           <div class="img-4-3">
             <img src="assets/lounge-deco.jpeg" alt="Interior lounge" loading="lazy">
           </div>
+          <figcaption><p class="fig-title">[Project Title]</p></figcaption>
         </figure>
         <figure>
           <div class="img-3-4">
             <img src="assets/bath-2.jpeg" alt="Bath remodel" loading="lazy">
           </div>
+          <figcaption><p class="fig-title">[Project Title]</p></figcaption>
         </figure>
       </div>
 
@@ -1081,6 +1021,7 @@
           <div class="img-21-9">
             <img src="assets/farmhouse.jpeg" alt="Exterior" loading="lazy">
           </div>
+          <figcaption><p class="fig-title">[Project Title]</p></figcaption>
         </figure>
       </div>
 
@@ -1090,11 +1031,13 @@
           <div class="img-3-4">
             <img src="assets/cafe-mustard.jpeg" alt="Commercial interior" loading="lazy">
           </div>
+          <figcaption><p class="fig-title">[Project Title]</p></figcaption>
         </figure>
         <figure>
           <div class="img-3-4">
             <img src="assets/marble-vanity.jpeg" alt="Marble vanity detail" loading="lazy">
           </div>
+          <figcaption><p class="fig-title">[Project Title]</p></figcaption>
         </figure>
       </div>
 
@@ -1104,6 +1047,7 @@
           <div class="img-21-9">
             <img src="assets/master-bath.jpeg" alt="Master bath" loading="lazy">
           </div>
+          <figcaption><p class="fig-title">[Project Title]</p></figcaption>
         </figure>
       </div>
 
@@ -1113,25 +1057,13 @@
           <div class="img-4-3">
             <img src="assets/exterior-double-door.jpeg" alt="Exterior entry" loading="lazy">
           </div>
+          <figcaption><p class="fig-title">[Project Title]</p></figcaption>
         </figure>
         <figure>
           <div class="img-3-4">
             <img src="assets/green-tile-bath.jpeg" alt="Green tile bath" loading="lazy">
           </div>
-        </figure>
-      </div>
-
-      <!-- Row 6: two portraits offset -->
-      <div class="gallery-row-3">
-        <figure>
-          <div class="img-3-4">
-            <img src="assets/bath-1.jpeg" alt="Bath interior" loading="lazy">
-          </div>
-        </figure>
-        <figure>
-          <div class="img-3-4">
-            <img src="assets/exterior-1.jpeg" alt="Residential exterior" loading="lazy">
-          </div>
+          <figcaption><p class="fig-title">[Project Title]</p></figcaption>
         </figure>
       </div>
     </div>
@@ -1329,46 +1261,6 @@
   </footer>
 
   <script>
-    /* ── Hero slideshow ──────────────────────────────── */
-    // To add a caption to any slide, set data-caption="Your label" on the slide div.
-    const slideEls = document.querySelectorAll('.hero-slide');
-    const SLIDES = Array.from(slideEls);
-    let current = 0;
-    const captionEl = document.getElementById('hero-caption');
-    const dots = document.querySelectorAll('.hero-dot');
-    let timer = null;
-
-    function goTo(n) {
-      SLIDES[current].classList.remove('active');
-      dots[current].classList.remove('active');
-      current = (n + SLIDES.length) % SLIDES.length;
-      SLIDES[current].classList.add('active');
-      dots[current].classList.add('active');
-      // Show caption only when data-caption is non-empty
-      const cap = SLIDES[current].dataset.caption || '';
-      captionEl.textContent = cap;
-      captionEl.style.display = cap ? '' : 'none';
-    }
-
-    function startTimer() {
-      clearInterval(timer);
-      timer = setInterval(() => goTo(current + 1), 5200);
-    }
-
-    goTo(0);
-    startTimer();
-
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        goTo(Number(dot.dataset.slide));
-        startTimer();
-      });
-    });
-
-    const heroEl = document.getElementById('hero-section');
-    heroEl.addEventListener('mouseenter', () => clearInterval(timer));
-    heroEl.addEventListener('mouseleave', startTimer);
-
     /* ── Sticky nav ──────────────────────────────────── */
     const nav = document.getElementById('main-nav');
     window.addEventListener('scroll', () => {
