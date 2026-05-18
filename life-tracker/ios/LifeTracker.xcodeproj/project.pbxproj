@@ -1,0 +1,567 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CC00000001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00000000FDCFA39411CA2CEA; };
+		CC00010001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00010000FDCFA39411CA2CEA; };
+		CC00020001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00020000FDCFA39411CA2CEA; };
+		CC00030001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00030000FDCFA39411CA2CEA; };
+		CC00040001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00040000FDCFA39411CA2CEA; };
+		CC00050001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00050000FDCFA39411CA2CEA; };
+		CC00060001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00060000FDCFA39411CA2CEA; };
+		CC00070001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00070000FDCFA39411CA2CEA; };
+		CC00080001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00080000FDCFA39411CA2CEA; };
+		CC00090001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00090000FDCFA39411CA2CEA; };
+		CC000A0001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB000A0000FDCFA39411CA2CEA; };
+		CC000B0001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB000B0000FDCFA39411CA2CEA; };
+		CC000C0001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB000C0000FDCFA39411CA2CEA; };
+		CC000D0001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB000D0000FDCFA39411CA2CEA; };
+		CC000E0001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB000E0000FDCFA39411CA2CEA; };
+		CC000E0002FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB000E0000FDCFA39411CA2CEA; };
+		CC000F0002FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB000F0000FDCFA39411CA2CEA; };
+		CC00100002FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = BB00100000FDCFA39411CA2CEA; };
+		AA300001FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA200001FDCFA39411CA2CEA; };
+		AA300002FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA200002FDCFA39411CA2CEA; };
+		AA300003FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA200003FDCFA39411CA2CEA; };
+		AA300004FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA200004FDCFA39411CA2CEA; };
+		AA300005FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA200005FDCFA39411CA2CEA; };
+		AA300006FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA200007FDCFA39411CA2CEA; };
+		AA300007FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA200002FDCFA39411CA2CEA; };
+		AA300008FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA200003FDCFA39411CA2CEA; };
+		AA300009FDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA200006FDCFA39411CA2CEA; };
+		2B4E0AB12B3D9F4A00C1E000 = {isa = PBXBuildFile; fileRef = 2B4E0AB02B3D9F4A00C1E000; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AA00010CFDCFA39411CA2CEA = {isa = PBXBuildFile; fileRef = AA00010BFDCFA39411CA2CEA; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1D6058940D05DD3E006BFB54 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LifeTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B4E0AB02B3D9F4A00C1E000 = {isa = PBXFileReference; explicitFileType = com.apple.product-type.app-extension; includeInIndex = 0; path = LifeTrackerWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB00000000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifeTrackerApp.swift; sourceTree = "<group>"; };
+		BB00010000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BB00020000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModels.swift; sourceTree = "<group>"; };
+		BB00030000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		BB00040000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceActivityService.swift; sourceTree = "<group>"; };
+		BB00050000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		BB00060000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
+		BB00070000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		BB00080000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EveningCheckInSheet.swift; sourceTree = "<group>"; };
+		BB00090000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		BB000A0000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoresView.swift; sourceTree = "<group>"; };
+		BB000B0000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
+		BB000C0000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsView.swift; sourceTree = "<group>"; };
+		BB000D0000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		BB000E0000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EveningCheckInAttributes.swift; sourceTree = "<group>"; };
+		BB000F0000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EveningCheckInView.swift; sourceTree = "<group>"; };
+		BB00100000FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidgets.swift; sourceTree = "<group>"; };
+		AA100001FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LifeTracker.entitlements; sourceTree = "<group>"; };
+		AA100002FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA100003FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA100004FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LifeTrackerWidgets.entitlements; sourceTree = "<group>"; };
+		AA200001FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		AA200002FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		AA200003FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActivityKit.framework; path = System/Library/Frameworks/ActivityKit.framework; sourceTree = SDKROOT; };
+		AA200004FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
+		AA200005FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FamilyControls.framework; path = System/Library/Frameworks/FamilyControls.framework; sourceTree = SDKROOT; };
+		AA200006FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		AA200007FDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
+		AA00010BFDCFA39411CA2CEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifeTrackerWidgetsBundle.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		29B97317FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				1D6058940D05DD3E006BFB54,
+				2B4E0AB02B3D9F4A00C1E000,
+			);
+			name = "Products"; sourceTree = "<group>";
+		};
+		AA000001FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB00000000FDCFA39411CA2CEA,
+				BB00010000FDCFA39411CA2CEA,
+				AA100001FDCFA39411CA2CEA,
+				AA100002FDCFA39411CA2CEA,
+			);
+			path = "App"; sourceTree = "<group>";
+		};
+		AA000002FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB00020000FDCFA39411CA2CEA,
+			);
+			path = "Models"; sourceTree = "<group>";
+		};
+		AA000003FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB00030000FDCFA39411CA2CEA,
+				BB00040000FDCFA39411CA2CEA,
+				BB00050000FDCFA39411CA2CEA,
+				BB00060000FDCFA39411CA2CEA,
+			);
+			path = "Services"; sourceTree = "<group>";
+		};
+		AA000005FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB00070000FDCFA39411CA2CEA,
+				BB00080000FDCFA39411CA2CEA,
+			);
+			path = "Views/Home"; sourceTree = "<group>";
+		};
+		AA000006FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB00090000FDCFA39411CA2CEA,
+			);
+			path = "Views/Onboarding"; sourceTree = "<group>";
+		};
+		AA000007FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB000A0000FDCFA39411CA2CEA,
+			);
+			path = "Views/Chores"; sourceTree = "<group>";
+		};
+		AA000008FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB000B0000FDCFA39411CA2CEA,
+			);
+			path = "Views/Contacts"; sourceTree = "<group>";
+		};
+		AA000009FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB000C0000FDCFA39411CA2CEA,
+			);
+			path = "Views/Insights"; sourceTree = "<group>";
+		};
+		AA00000AFDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB000D0000FDCFA39411CA2CEA,
+			);
+			path = "Views/Settings"; sourceTree = "<group>";
+		};
+		AA000004FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				AA000005FDCFA39411CA2CEA,
+				AA000006FDCFA39411CA2CEA,
+				AA000007FDCFA39411CA2CEA,
+				AA000008FDCFA39411CA2CEA,
+				AA000009FDCFA39411CA2CEA,
+				AA00000AFDCFA39411CA2CEA,
+			);
+			path = "Views"; sourceTree = "<group>";
+		};
+		AA00000CFDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB000E0000FDCFA39411CA2CEA,
+				BB000F0000FDCFA39411CA2CEA,
+			);
+			path = "Widgets/EveningCheckIn"; sourceTree = "<group>";
+		};
+		AA00000DFDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				BB00100000FDCFA39411CA2CEA,
+			);
+			path = "Widgets/LockScreen"; sourceTree = "<group>";
+		};
+		AA00000BFDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				AA00000CFDCFA39411CA2CEA,
+				AA00000DFDCFA39411CA2CEA,
+			);
+			path = "Widgets"; sourceTree = "<group>";
+		};
+		AA00000EFDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				AA100003FDCFA39411CA2CEA,
+				AA100004FDCFA39411CA2CEA,
+				AA00010BFDCFA39411CA2CEA,
+			);
+			path = "LifeTrackerWidgets"; sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA = {
+			isa = PBXGroup;
+			children = (
+				AA000001FDCFA39411CA2CEA,
+				AA000002FDCFA39411CA2CEA,
+				AA000003FDCFA39411CA2CEA,
+				AA000004FDCFA39411CA2CEA,
+				AA00000BFDCFA39411CA2CEA,
+				AA00000EFDCFA39411CA2CEA,
+				29B97317FDCFA39411CA2CEA,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2B4E0AA82B3D9F4A00C1E000 = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2B4E0AB12B3D9F4A00C1E000,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D60589C0D05DD56006BFB54 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA300001FDCFA39411CA2CEA,
+				AA300002FDCFA39411CA2CEA,
+				AA300003FDCFA39411CA2CEA,
+				AA300004FDCFA39411CA2CEA,
+				AA300005FDCFA39411CA2CEA,
+				AA300006FDCFA39411CA2CEA,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B4E0AA62B3D9F4A00C1E000 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA300007FDCFA39411CA2CEA,
+				AA300008FDCFA39411CA2CEA,
+				AA300009FDCFA39411CA2CEA,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D60589D0D05DD56006BFB54 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B4E0AA72B3D9F4A00C1E000 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D60589B0D05DD56006BFB54 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC00000001FDCFA39411CA2CEA,
+				CC00010001FDCFA39411CA2CEA,
+				CC00020001FDCFA39411CA2CEA,
+				CC00030001FDCFA39411CA2CEA,
+				CC00040001FDCFA39411CA2CEA,
+				CC00050001FDCFA39411CA2CEA,
+				CC00060001FDCFA39411CA2CEA,
+				CC00070001FDCFA39411CA2CEA,
+				CC00080001FDCFA39411CA2CEA,
+				CC00090001FDCFA39411CA2CEA,
+				CC000A0001FDCFA39411CA2CEA,
+				CC000B0001FDCFA39411CA2CEA,
+				CC000C0001FDCFA39411CA2CEA,
+				CC000D0001FDCFA39411CA2CEA,
+				CC000E0001FDCFA39411CA2CEA,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B4E0AA52B3D9F4A00C1E000 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC000E0002FDCFA39411CA2CEA,
+				CC000F0002FDCFA39411CA2CEA,
+				CC00100002FDCFA39411CA2CEA,
+				AA00010CFDCFA39411CA2CEA,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		1D6058900D05DD3D006BFB54 = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D6058910D05DD3D006BFB54;
+			buildPhases = (
+				1D60589B0D05DD56006BFB54,
+				1D60589C0D05DD56006BFB54,
+				1D60589D0D05DD56006BFB54,
+				2B4E0AA82B3D9F4A00C1E000,
+			);
+			buildRules = ();
+			dependencies = ();
+			name = LifeTracker;
+			productName = LifeTracker;
+			productReference = 1D6058940D05DD3E006BFB54;
+			productType = "com.apple.product-type.application";
+		};
+		2B4E0AA12B3D9F4A00C1E000 = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B4E0AA22B3D9F4A00C1E000;
+			buildPhases = (
+				2B4E0AA52B3D9F4A00C1E000,
+				2B4E0AA62B3D9F4A00C1E000,
+				2B4E0AA72B3D9F4A00C1E000,
+			);
+			buildRules = ();
+			dependencies = ();
+			name = LifeTrackerWidgets;
+			productName = LifeTrackerWidgets;
+			productReference = 2B4E0AB02B3D9F4A00C1E000;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					1D6058900D05DD3D006BFB54 = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					2B4E0AA12B3D9F4A00C1E000 = {
+						CreatedOnToolsVersion = 15.3;
+					};
+				};
+			};
+			buildConfigurationList = C01FCF4E08A954540054247B;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base);
+			mainGroup = 29B97315FDCFA39411CA2CEA;
+			productRefGroup = 29B97317FDCFA39411CA2CEA;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1D6058900D05DD3D006BFB54,
+				2B4E0AA12B3D9F4A00C1E000,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4F08A954540054247B = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1 $(inherited)";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1D6058920D05DD3D006BFB54 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1 $(inherited)";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "LifeTracker/LifeTracker.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "LifeTracker/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(DEVELOPMENT_TEAM).com.lifetracker";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1";
+			};
+			name = Debug;
+		};
+		1D6058930D05DD3D006BFB54 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "LifeTracker/LifeTracker.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "LifeTracker/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(DEVELOPMENT_TEAM).com.lifetracker";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1";
+			};
+			name = Release;
+		};
+		2B4E0AA32B3D9F4A00C1E000 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1 $(inherited)";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				CODE_SIGN_ENTITLEMENTS = "LifeTrackerWidgets/LifeTrackerWidgets.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "LifeTrackerWidgets/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(DEVELOPMENT_TEAM).com.lifetracker.widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1";
+			};
+			name = Debug;
+		};
+		2B4E0AA42B3D9F4A00C1E000 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+				CODE_SIGN_ENTITLEMENTS = "LifeTrackerWidgets/LifeTrackerWidgets.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "LifeTrackerWidgets/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(DEVELOPMENT_TEAM).com.lifetracker.widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4E08A954540054247B = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B,
+				C01FCF5008A954540054247B,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1D6058910D05DD3D006BFB54 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D6058920D05DD3D006BFB54,
+				1D6058930D05DD3D006BFB54,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2B4E0AA22B3D9F4A00C1E000 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B4E0AA32B3D9F4A00C1E000,
+				2B4E0AA42B3D9F4A00C1E000,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA;
+}
