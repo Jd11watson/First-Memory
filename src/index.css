@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-zinc-950 text-zinc-100 antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  }
+
+  ::-webkit-scrollbar        { @apply w-1 h-1; }
+  ::-webkit-scrollbar-track  { @apply bg-zinc-950; }
+  ::-webkit-scrollbar-thumb  { @apply bg-zinc-700 rounded-full; }
+}
+
+@layer components {
+  .card {
+    @apply bg-zinc-900 border border-zinc-800 rounded-xl;
+  }
+  .card-hover {
+    @apply bg-zinc-900 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-colors;
+  }
+  .label-xs {
+    @apply text-[11px] font-medium uppercase tracking-widest text-zinc-500;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .section-title {
+    @apply text-[11px] font-semibold uppercase tracking-widest text-zinc-500 mb-3;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
