@@ -241,7 +241,10 @@
   .cityrow .cbar i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
   .cityrow .cnum { font-size: 12.5px; color: var(--ink-2); width: 22px; text-align: right; }
 
-  .insights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+  .clickable { cursor: pointer; border-radius: 8px; transition: background .12s; }
+  .barline.clickable { padding: 4px 6px; margin: 0 -6px; }
+  .barline.clickable:hover, .cityrow.clickable:hover { background: var(--hover); }
   .insight {
     background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 15px;
     border-left: 3px solid var(--accent);
@@ -711,7 +714,7 @@ const state = {
   view: 'overview',
   selectedId: null,
   theme: (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light',
-  filters: { search:'', industry:'', region:'', tag:'', minStrength:1 },
+  filters: { search:'', industry:'', region:'', city:'', tag:'', minStrength:1 },
   legendFocus: null,
 };
 
@@ -742,6 +745,7 @@ function filtered() {
     if (q && !`${c.name} ${c.company} ${c.title}`.toLowerCase().includes(q)) return false;
     if (f.industry && c.industry !== f.industry) return false;
     if (f.region && c.region !== f.region) return false;
+    if (f.city && c.city !== f.city) return false;
     if (f.tag && !c.tags.includes(f.tag)) return false;
     if (c.strength < f.minStrength) return false;
     return true;
@@ -856,6 +860,7 @@ class GraphSim {
     const ink = cs.getPropertyValue('--ink').trim();
     const ink3 = cs.getPropertyValue('--ink-3').trim();
     const surface = cs.getPropertyValue('--bg').trim();
+    const accent = cs.getPropertyValue('--accent').trim();
     // links from each node to every hub it belongs to (the social web)
     ctx.lineWidth = 1/k;
     for (const nd of this.nodes){
@@ -868,12 +873,23 @@ class GraphSim {
     // nodes
     for (const nd of this.nodes){
       const dim = this._dim(nd);
+      const sel = nd.contact.id === state.selectedId;
       ctx.globalAlpha = dim ? 0.16 : 1;
+      if (sel){ // selection halo
+        ctx.beginPath(); ctx.arc(nd.x,nd.y,nd.r+5/k,0,7);
+        ctx.fillStyle=accent; ctx.globalAlpha=0.18; ctx.fill(); ctx.globalAlpha=1;
+      }
       ctx.beginPath(); ctx.arc(nd.x,nd.y,nd.r,0,7); ctx.fillStyle=nd.color; ctx.fill();
-      ctx.lineWidth = (nd===this.hover?2.4:1.4)/k;
-      ctx.strokeStyle = nd===this.hover ? ink : surface; ctx.stroke();
+      ctx.lineWidth = (sel?2.6:(nd===this.hover?2.4:1.4))/k;
+      ctx.strokeStyle = sel ? accent : (nd===this.hover ? ink : surface); ctx.stroke();
     }
     ctx.globalAlpha = 1;
+    // persistent name label for the selected node
+    const selNode = this.nodes.find(n=>n.contact.id===state.selectedId);
+    if (selNode && !this._dim(selNode)){
+      ctx.font=`600 ${11.5/k}px system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='top';
+      ctx.fillStyle=ink; ctx.fillText(selNode.contact.name, selNode.x, selNode.y + selNode.r + 4/k);
+    }
     // hub labels
     if (this.showLabels) for (const [key,h] of this.hubs){
       if (state.legendFocus && state.legendFocus!==key) ctx.globalAlpha=0.3; else ctx.globalAlpha=1;
@@ -954,10 +970,14 @@ function renderChips() {
     const c = el('button','chip'+(f.minStrength===v?' active':''), lab);
     c.onclick = ()=>{ f.minStrength=v; rerender(); }; wrap.append(c);
   });
+  if (f.city) {
+    const c = el('button','chip active', `${esc(f.city)} <span class="x">✕</span>`);
+    c.onclick = ()=>{ f.city=''; rerender(); }; wrap.append(c);
+  }
   const cnt = filtered().length;
   const r = el('span','result', `<b class="mono">${cnt}</b> of <span class="mono">${state.contacts.length}</span>`);
-  if (f.industry||f.region||f.tag||f.search||f.minStrength>1) {
-    const clr = el('button','chip','Clear ✕'); clr.onclick=()=>{ state.filters={search:'',industry:'',region:'',tag:'',minStrength:1}; $('#searchInput').value=''; $('#searchBox').classList.remove('has-value'); rerender(); };
+  if (f.industry||f.region||f.city||f.tag||f.search||f.minStrength>1) {
+    const clr = el('button','chip','Clear ✕'); clr.onclick=()=>{ state.filters={search:'',industry:'',region:'',city:'',tag:'',minStrength:1}; $('#searchInput').value=''; $('#searchBox').classList.remove('has-value'); rerender(); };
     wrap.append(clr);
   }
   wrap.append(r);
@@ -981,12 +1001,17 @@ function renderOverview() {
   const strengthCounts = [1,2,3,4,5].map(s=>cs.filter(c=>c.strength===s).length);
   const sMax = Math.max(...strengthCounts,1);
 
+  // super-connectors: people who bridge the most circles (multi-tag) — the
+  // relationships that stitch otherwise-separate parts of the network together.
+  const connectors = [...cs].filter(c=>c.tags.length>=2).sort((a,b)=>b.tags.length-a.tags.length);
+  const evenLabel = div.evenness<45?'concentrated':div.evenness>70?'well diversified':'moderately balanced';
+
   // insights
   const insights = [];
   if (top) insights.push(['Composition', `Your network leans <b>${top.label}</b> — ${Math.round(top.pct*100)}% of connections, with ${div.distinct} industries represented overall.`]);
   if (topCity) insights.push(['Density', `<b>${esc(topCity.label)}</b> is your hub with ${topCity.count} contact${topCity.count>1?'s':''} (${Math.round(topCity.pct*100)}% of your map).`]);
   insights.push(['Depth', `You have <b>${strong} strong ties</b> (tie ≥ 4) — the relationships you can activate directly.`]);
-  const evenLabel = div.evenness<45?'concentrated':div.evenness>70?'well diversified':'moderately balanced';
+  if (connectors[0]) insights.push(['Connectors', `<b>${esc(connectors[0].name)}</b> bridges the most circles (${connectors[0].tags.map(esc).join(', ')}) — a natural introducer across groups.`]);
 
   root.innerHTML = `
    <div class="ov">
@@ -1002,7 +1027,7 @@ function renderOverview() {
         <div class="card-h"><h3>Composition by industry</h3><span class="meta">${cs.length} connections</span></div>
         <div class="barlist">
           ${inds.map(b=>`
-            <div class="barline">
+            <div class="barline clickable" data-industry="${b.key}" title="View ${esc(b.label)} in the Industry lens">
               <div class="bl-top">
                 <span class="bl-name"><span class="sw" style="background:${industryColor(b.key)}"></span>${esc(b.label)}</span>
                 <span class="bl-val mono">${b.count} · ${Math.round(b.pct*100)}%</span>
@@ -1022,7 +1047,7 @@ function renderOverview() {
         <div class="card-h" style="margin:20px 0 8px"><h3 style="font-size:13px">Top cities</h3></div>
         <div class="cities">
           ${cities.slice(0,6).map((c,i)=>`
-            <div class="cityrow">
+            <div class="cityrow clickable" data-city="${esc(c.label)}" title="Filter to ${esc(c.label)}">
               <span class="rank mono">${i+1}</span>
               <span class="cname">${esc(c.label)}</span>
               <span class="cbar"><i style="width:${c.pct/(cities[0].pct)*100}%"></i></span>
@@ -1037,6 +1062,14 @@ function renderOverview() {
       ${insights.map(([ic,txt])=>`<div class="insight"><div class="ic">${ic}</div><p>${txt}</p></div>`).join('')}
     </div>
    </div>`;
+
+  // drill-downs: industry bar → Industry lens filtered; city row → filter + Geography
+  root.querySelectorAll('[data-industry]').forEach(b=> b.onclick=()=>{
+    state.filters.industry = b.dataset.industry; setView('industry');
+  });
+  root.querySelectorAll('[data-city]').forEach(b=> b.onclick=()=>{
+    state.filters.city = state.filters.city===b.dataset.city ? '' : b.dataset.city; setView('geography');
+  });
 
   // mini live graph
   const mc = $('#miniGraph');
