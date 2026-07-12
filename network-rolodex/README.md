@@ -52,12 +52,25 @@ Overview and Circles lenses are in `prototype.html`.)
 Each view carries a compact insight panel that surfaces the "so what," not just
 dots on a screen.
 
-## Importing
+## Importing your own network (local & private)
 
-- **LinkedIn** — export your connections (Settings → Data privacy → Get a copy of
-  your data → Connections) and drop the `Connections.csv` into **Import CSV**.
-  City/region aren't in LinkedIn's export, so add those per contact afterward.
+Everything is parsed **in your browser** — nothing is uploaded. Open **Import**,
+then drop your export files (several at once is fine — each is auto-detected):
+
+- **LinkedIn** — Settings & Privacy → Data privacy → *Get a copy of your data* →
+  **Connections** → drop `Connections.csv`. The professional layer (name,
+  company, title). City isn't in the export; add it later.
+- **Instagram** — Settings → Accounts Center → *Your information & permissions* →
+  Download your information → **Followers & following**, format **JSON** → drop
+  `followers_1.json` and `following.json`. People you both follow are tagged
+  **mutual**; close friends tagged **close-friend**. Usernames only, so these
+  start as handles to enrich later.
 - **Manual** — the **+ Add** button.
+
+Imports **dedupe and merge** across sources (and against existing contacts) by
+normalized name, so the same person from LinkedIn + Instagram becomes one node
+carrying both `linkedin` and `instagram` tags. Back up anytime via
+**Export JSON / CSV**.
 
 ## Derived, but overridable
 

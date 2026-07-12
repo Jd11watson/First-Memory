@@ -407,6 +407,17 @@
   .imp-status.err { color: #d03b3b; }
   .export-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
   .export-label { font-size: 12.5px; color: var(--ink-2); margin-right: auto; }
+  .src-guide { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .src-guide details { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); overflow: hidden; }
+  .src-guide summary { display: flex; align-items: center; gap: 9px; padding: 10px 12px; cursor: pointer; font-weight: 550; font-size: 13px; list-style: none; }
+  .src-guide summary::-webkit-details-marker { display: none; }
+  .src-guide summary::after { content: '⌄'; margin-left: auto; color: var(--ink-3); font-size: 15px; }
+  .src-guide details[open] summary::after { content: '⌃'; }
+  .src-badge { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; color: #fff; font-size: 12px; font-weight: 700; flex: none; }
+  .src-badge.li { background: #0a66c2; font-family: Georgia, serif; }
+  .src-badge.ig { background: linear-gradient(135deg, #f9ce34, #ee2a7b 45%, #6228d7); }
+  .src-steps { padding: 0 12px 12px 43px; font-size: 12px; color: var(--ink-2); line-height: 1.55; }
+  .src-steps code { background: var(--bg); padding: 1px 5px; border-radius: 4px; font-size: 11px; }
 
   .empty { display: grid; place-items: center; height: 100%; color: var(--ink-3); text-align: center; padding: 40px; }
 
@@ -567,21 +578,34 @@
 
 <div class="backdrop" id="importModal">
   <div class="modal">
-    <h2>Import from LinkedIn</h2>
-    <div class="msub">Export your connections (Settings → Data privacy → Get a copy of your data → Connections), then drop the <code>Connections.csv</code> below. City &amp; region aren’t in LinkedIn’s export — add them per contact after importing.</div>
+    <h2>Build your network</h2>
+    <div class="msub">Everything is parsed <b>in your browser</b> — nothing is uploaded. Drop your export files below and they're detected automatically.</div>
+
+    <div class="src-guide">
+      <details open>
+        <summary><span class="src-badge li">in</span>LinkedIn — your professional layer</summary>
+        <div class="src-steps">Settings &amp; Privacy → Data privacy → <b>Get a copy of your data</b> → select <b>Connections</b> → download → drop <code>Connections.csv</code> here. (City isn't in the export — add it later.)</div>
+      </details>
+      <details>
+        <summary><span class="src-badge ig">◎</span>Instagram — your social circles</summary>
+        <div class="src-steps">Settings → Accounts Center → <b>Your information &amp; permissions</b> → Download your information → pick <b>Followers &amp; following</b>, format <b>JSON</b>. Drop <code>followers_1.json</code> and <code>following.json</code> here. People you both follow become <b>mutuals</b>. Usernames only — enrich names later.</div>
+      </details>
+    </div>
+
     <label class="drop" id="drop">
-      <div><strong>Choose or drop Connections.csv</strong></div>
-      <div style="font-size:12px;margin-top:6px;color:var(--ink-3)">or paste rows — First Name, Last Name, Company, Position</div>
-      <input id="csvFile" type="file" accept=".csv,text/csv" style="display:none"/>
+      <div><strong>Choose or drop your files</strong></div>
+      <div style="font-size:12px;margin-top:6px;color:var(--ink-3)">Connections.csv · followers_*.json · following.json · close_friends.json — several at once is fine</div>
+      <input id="csvFile" type="file" accept=".csv,.json,text/csv,application/json" multiple style="display:none"/>
     </label>
     <div class="imp-status" id="impStatus"></div>
+
     <div class="export-row">
-      <span class="export-label">Export your data</span>
-      <button class="btn" id="exportJson">JSON</button>
-      <button class="btn" id="exportCsv">CSV</button>
+      <span class="export-label">Back up your data</span>
+      <button class="btn" id="exportJson">Export JSON</button>
+      <button class="btn" id="exportCsv">Export CSV</button>
     </div>
     <div class="m-actions">
-      <button class="btn" data-close>Close</button>
+      <button class="btn" data-close>Done</button>
       <button class="btn" id="loadSample">Reset to sample data</button>
     </div>
   </div>
@@ -1402,8 +1426,9 @@ $('#a_save').onclick = ()=>{
   closeModal('addModal');
 };
 
-/* CSV import */
+/* ---- LinkedIn CSV ---- */
 function parseLine(line){ const out=[]; let cur='',q=false; for(let i=0;i<line.length;i++){const ch=line[i]; if(q){ if(ch==='"'){ if(line[i+1]==='"'){cur+='"';i++;}else q=false; } else cur+=ch; } else if(ch==='"')q=true; else if(ch===','){out.push(cur);cur='';} else cur+=ch;} out.push(cur); return out.map(s=>s.trim()); }
+function looksLikeLinkedIn(text){ const first = text.slice(0, 4000).toLowerCase(); return first.includes('first name') && first.includes('last name'); }
 function parseCsv(text){
   const lines = text.split(/\r?\n/).filter(l=>l.trim());
   const rows = lines.map(parseLine);
@@ -1413,19 +1438,95 @@ function parseCsv(text){
   const iF=col('first name'),iL=col('last name'),iC=col('company'),iP=col('position'),iD=col('connected on');
   const out=[];
   for(let r=hi+1;r<rows.length;r++){ const row=rows[r]; const name=`${row[iF]||''} ${row[iL]||''}`.trim(); if(!name)continue;
-    out.push({ name, company:iC>=0?row[iC]||'':'', title:iP>=0?row[iP]||'':'', connectedOn:iD>=0?row[iD]||'':'', source:'linkedin-csv' }); }
+    out.push({ name, company:iC>=0?row[iC]||'':'', title:iP>=0?row[iP]||'':'', connectedOn:iD>=0?row[iD]||'':'', source:'linkedin-csv', tags:['linkedin'] }); }
   return out;
 }
-function handleFile(file){
-  if(!file)return;
-  file.text().then(text=>{ try{ const rows=parseCsv(text); if(!rows.length){setStatus(false,'No contacts found in that file.');return;} const n=importMany(rows); setStatus(true,`Imported ${n} contact${n===1?'':'s'}.`); toast(`Imported ${n} contacts`);}catch(err){ setStatus(false, err.message||'Could not parse that file.'); } });
+
+/* ---- Instagram data download (JSON) ----
+   followers_*.json is a top-level array; following.json / close_friends.json are
+   objects keyed relationships_*. Each entry carries string_list_data[0].value =
+   the username. We classify by filename (reliable in IG exports). */
+function extractIgHandles(data){
+  const out=[]; const pull=arr=>{ for(const it of arr){ const s=it && it.string_list_data; if(s&&s[0]&&s[0].value) out.push(s[0].value); } };
+  if (Array.isArray(data)) pull(data);
+  else if (data && typeof data==='object') for(const k of Object.keys(data)) if(Array.isArray(data[k])) pull(data[k]);
+  return out;
 }
-function setStatus(ok,msg){ const s=$('#impStatus'); s.className='imp-status '+(ok?'ok':'err'); s.textContent=msg; }
-$('#csvFile').onchange = e=>handleFile(e.target.files?.[0]);
+
+/* ---- dedupe / merge ---- */
+const normKey = s => (s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+function mergeImport(incoming){
+  const byKey = new Map();
+  state.contacts.forEach(c=> byKey.set(normKey(c.name), c));
+  let added=0, merged=0;
+  const next = state.contacts.slice();
+  for (const raw of incoming){
+    const c = normalize(raw);
+    const k = normKey(c.name); if(!k) continue;
+    const ex = byKey.get(k);
+    if (ex){
+      ex.tags = [...new Set([...ex.tags, ...c.tags])];
+      if(!ex.company && c.company) ex.company = c.company;
+      if(!ex.title && c.title) ex.title = c.title;
+      if(!ex.city && c.city) ex.city = c.city;
+      if(!ex.notes && c.notes) ex.notes = c.notes;
+      ex.strength = Math.max(ex.strength, c.strength);
+      const idx = next.indexOf(ex); if(idx>=0) next[idx] = normalize(ex); // re-infer, keep id
+      merged++;
+    } else { next.push(c); byKey.set(k, c); added++; }
+  }
+  state.contacts = next; persist(); refreshData();
+  return { added, merged };
+}
+
+/* ---- file dispatcher ---- */
+function setStatus(ok,msg){ const s=$('#impStatus'); s.className='imp-status '+(ok?'ok':'err'); s.innerHTML=msg; }
+async function processFiles(fileList){
+  const files = [...(fileList||[])]; if(!files.length) return;
+  const liRows=[]; const ig={followers:new Set(), following:new Set(), close:new Set()};
+  const problems=[];
+  for (const f of files){
+    let text; try { text = await f.text(); } catch { problems.push(`${f.name}: unreadable`); continue; }
+    const nm = f.name.toLowerCase();
+    try {
+      if (nm.endsWith('.csv') || looksLikeLinkedIn(text)) { liRows.push(...parseCsv(text)); }
+      else if (nm.endsWith('.json')) {
+        const handles = extractIgHandles(JSON.parse(text));
+        if(!handles.length){ problems.push(`${f.name}: no usernames found`); continue; }
+        const bucket = nm.includes('following') ? 'following' : nm.includes('close') ? 'close' : 'followers';
+        handles.forEach(h=>ig[bucket].add(h));
+      } else problems.push(`${f.name}: unsupported (need .csv or .json)`);
+    } catch(err){ problems.push(`${f.name}: ${err.message}`); }
+  }
+
+  // Build Instagram contacts from the union of handles, tagging mutuals.
+  const igContacts=[]; const all=new Set([...ig.followers, ...ig.following, ...ig.close]);
+  let mutuals=0;
+  for (const h of all){
+    const mutual = ig.followers.has(h) && ig.following.has(h);
+    const isClose = ig.close.has(h);
+    const tags=['instagram']; if(isClose) tags.push('close-friend');
+    if(mutual){ tags.push('mutual'); mutuals++; } else if(ig.following.has(h)) tags.push('ig-following'); else tags.push('ig-follower');
+    igContacts.push({ name:h, source:'instagram', tags, strength: isClose?4:mutual?3:2, notes:`Instagram @${h}` });
+  }
+
+  const incoming = [...liRows, ...igContacts];
+  if(!incoming.length){ setStatus(false, problems.length?problems.join('<br>'):'No contacts found in those files.'); return; }
+  const { added, merged } = mergeImport(incoming);
+
+  const parts=[];
+  if(liRows.length) parts.push(`<b>${liRows.length}</b> from LinkedIn`);
+  if(igContacts.length) parts.push(`<b>${igContacts.length}</b> from Instagram${mutuals?` (${mutuals} mutuals)`:''}`);
+  let msg = `${parts.join(' · ')||'Parsed'} → <b>${added}</b> added, <b>${merged}</b> merged. Total network: <b>${state.contacts.length}</b>.`;
+  if(problems.length) msg += `<br><span style="color:var(--ink-3)">Skipped: ${problems.join('; ')}</span>`;
+  setStatus(true, msg);
+  toast(`Imported ${added} · merged ${merged}`);
+}
+$('#csvFile').onchange = e=>processFiles(e.target.files);
 const drop=$('#drop');
 ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('hot');}));
 ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('hot');}));
-drop.addEventListener('drop', e=>handleFile(e.dataTransfer.files?.[0]));
+drop.addEventListener('drop', e=>processFiles(e.dataTransfer.files));
 $('#loadSample').onclick = ()=>{ resetSample(); closeModal('importModal'); };
 
 /* Export */
