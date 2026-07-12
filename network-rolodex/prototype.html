@@ -260,7 +260,7 @@
   /* ---------------- Graph (Industry) ---------------- */
   .graph-view { position: absolute; inset: 0; }
   /* canvas is a replaced element — needs explicit 100% to fill, inset:0 alone won't stretch it */
-  #graph { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+  #graph, #graphCircles { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
   .legend {
     position: absolute; top: 16px; left: 16px; z-index: 3;
     background: color-mix(in srgb, var(--panel) 88%, transparent);
@@ -274,6 +274,7 @@
   .legend .sw { width: 11px; height: 11px; border-radius: 3px; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.1); }
   .legend .ln { flex: 1; }
   .legend .lc { color: var(--ink-3); font-size: 12px; }
+  .legend-note { margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--line); font-size: 10.5px; color: var(--ink-3); line-height: 1.45; }
   .graph-hint {
     position: absolute; bottom: 16px; left: 16px; z-index: 3;
     font-size: 12px; color: var(--ink-3);
@@ -449,9 +450,13 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
       <span class="txt">Geography</span><span class="kbd">3</span>
     </button>
+    <button class="nav-item" data-view="circles">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="9" r="4.5"/><circle cx="16" cy="15" r="4.5"/></svg>
+      <span class="txt">Circles</span><span class="kbd">4</span>
+    </button>
     <button class="nav-item" data-view="rolodex">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg>
-      <span class="txt">Rolodex</span><span class="kbd">4</span>
+      <span class="txt">Rolodex</span><span class="kbd">5</span>
     </button>
 
     <div class="nav-spacer"></div>
@@ -500,6 +505,18 @@
           </div>
         </div>
         <div class="view" id="view-geography"></div>
+        <div class="view" id="view-circles">
+          <div class="graph-view">
+            <canvas id="graphCircles"></canvas>
+            <div class="legend" id="legendCircles"></div>
+            <div class="graph-hint">People cluster by shared circles — someone in two circles bridges them</div>
+            <div class="graph-controls">
+              <button id="cZoomIn" aria-label="Zoom in"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+              <button id="cZoomOut" aria-label="Zoom out"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></button>
+              <button id="cFit" aria-label="Fit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4"/></svg></button>
+            </div>
+          </div>
+        </div>
         <div class="view" id="view-rolodex"></div>
       </div>
       <aside class="drawer" id="drawer"><div class="drawer-in" id="drawerIn"></div></aside>
@@ -750,32 +767,37 @@ class GraphSim {
     if (interactive) this._bind();
     this._raf = this._raf.bind(this);
   }
-  setData(contacts, groupBy) {
-    this.groupBy = groupBy;
-    const groups = new Map();
-    for (const c of contacts) { const g = c[groupBy]||'other'; groups.set(g,(groups.get(g)||0)+1); }
-    // arrange hub anchors on a circle sized to cluster count
-    const keys = [...groups.keys()];
-    const R = this.compact ? 78 : 190 + keys.length*16;
+  // Generic layout. opts: { groupsOf(c)->[hubKeys], hubLabel(k)->str, colorOf(c)->hex }
+  // A node may belong to several hubs (e.g. shared social circles), and is sprung
+  // toward their centroid — nodes bridging two circles sit between them, which is
+  // exactly the social-overlap structure the Circles lens visualizes.
+  setData(contacts, opts) {
+    const { groupsOf, hubLabel, colorOf } = opts;
+    const counts = new Map(), memb = new Map();
+    for (const c of contacts) {
+      const keys = groupsOf(c); memb.set(c.id, keys);
+      for (const k of keys) counts.set(k, (counts.get(k)||0)+1);
+    }
+    const keys = [...counts.keys()];
+    const R = this.compact ? 78 : 180 + keys.length*14;
     this.hubs = new Map();
     keys.forEach((k,i)=>{
       const a = (i/keys.length)*Math.PI*2 - Math.PI/2;
-      this.hubs.set(k, { x: Math.cos(a)*R, y: Math.sin(a)*R, count: groups.get(k), label: (groupBy==='region'?REGION_SHORT[k]:INDUSTRY_LABEL[k])||k });
+      this.hubs.set(k, { x: Math.cos(a)*R, y: Math.sin(a)*R, count: counts.get(k), label: hubLabel(k) });
     });
     const prev = new Map(this.nodes.map(n=>[n.id,n]));
     this.nodes = contacts.map(c => {
-      const hub = this.hubs.get(c[groupBy]||'other');
+      const hk = memb.get(c.id); const h0 = this.hubs.get(hk[0]);
       const p = prev.get(c.id);
       return {
-        id:c.id, contact:c, group:c[groupBy]||'other',
-        x: p?p.x: hub.x + (Math.random()-.5)*80,
-        y: p?p.y: hub.y + (Math.random()-.5)*80,
+        id:c.id, contact:c, hubKeys:hk, color:colorOf(c),
+        x: p?p.x: h0.x + (Math.random()-.5)*80,
+        y: p?p.y: h0.y + (Math.random()-.5)*80,
         vx:0, vy:0, r: 4.5 + (c.strength-1)*1.35,
       };
     });
     this.alpha = 1; this.needsFit = true;
   }
-  colorFor(g){ return this.groupBy==='region' ? regionColor(g) : industryColor(g); }
   start(){ if(this.running)return; this.running=true; this._resize(); requestAnimationFrame(this._raf); }
   stop(){ this.running=false; }
   _resize(){
@@ -801,15 +823,17 @@ class GraphSim {
       for (let i=0;i<n.length;i++){
         for (let j=i+1;j<n.length;j++){
           let dx=n[j].x-n[i].x, dy=n[j].y-n[i].y; let d2=dx*dx+dy*dy||0.01;
-          const rep = (n[i].group===n[j].group?520:150)/d2;
+          const share = n[i].hubKeys.some(k=>n[j].hubKeys.includes(k));
+          const rep = (share?520:150)/d2;
           const d=Math.sqrt(d2); const fx=dx/d*rep, fy=dy/d*rep;
           n[i].vx-=fx; n[i].vy-=fy; n[j].vx+=fx; n[j].vy+=fy;
         }
       }
-      // spring toward hub anchor
+      // spring toward the centroid of the node's hub(s)
       for (const nd of n){
-        const h=this.hubs.get(nd.group);
-        nd.vx += (h.x-nd.x)*0.012; nd.vy += (h.y-nd.y)*0.012;
+        let hx=0, hy=0; for (const k of nd.hubKeys){ const h=this.hubs.get(k); hx+=h.x; hy+=h.y; }
+        hx/=nd.hubKeys.length; hy/=nd.hubKeys.length;
+        nd.vx += (hx-nd.x)*0.012; nd.vy += (hy-nd.y)*0.012;
         nd.vx*=0.86; nd.vy*=0.86;
         nd.x+=nd.vx*this.alpha; nd.y+=nd.vy*this.alpha;
       }
@@ -832,20 +856,20 @@ class GraphSim {
     const ink = cs.getPropertyValue('--ink').trim();
     const ink3 = cs.getPropertyValue('--ink-3').trim();
     const surface = cs.getPropertyValue('--bg').trim();
-    // links to hub
+    // links from each node to every hub it belongs to (the social web)
     ctx.lineWidth = 1/k;
     for (const nd of this.nodes){
       if (this._dim(nd)) continue;
-      const h=this.hubs.get(nd.group);
-      ctx.strokeStyle = line; ctx.globalAlpha = 0.5;
-      ctx.beginPath(); ctx.moveTo(nd.x,nd.y); ctx.lineTo(h.x,h.y); ctx.stroke();
+      ctx.strokeStyle = line; ctx.globalAlpha = nd.hubKeys.length>1 ? 0.32 : 0.5;
+      for (const key of nd.hubKeys){ const h=this.hubs.get(key);
+        ctx.beginPath(); ctx.moveTo(nd.x,nd.y); ctx.lineTo(h.x,h.y); ctx.stroke(); }
     }
     ctx.globalAlpha = 1;
     // nodes
     for (const nd of this.nodes){
       const dim = this._dim(nd);
       ctx.globalAlpha = dim ? 0.16 : 1;
-      ctx.beginPath(); ctx.arc(nd.x,nd.y,nd.r,0,7); ctx.fillStyle=this.colorFor(nd.group); ctx.fill();
+      ctx.beginPath(); ctx.arc(nd.x,nd.y,nd.r,0,7); ctx.fillStyle=nd.color; ctx.fill();
       ctx.lineWidth = (nd===this.hover?2.4:1.4)/k;
       ctx.strokeStyle = nd===this.hover ? ink : surface; ctx.stroke();
     }
@@ -861,7 +885,7 @@ class GraphSim {
     }
     ctx.globalAlpha=1; ctx.restore();
   }
-  _dim(nd){ return state.legendFocus && nd.group!==state.legendFocus; }
+  _dim(nd){ return state.legendFocus && !nd.hubKeys.includes(state.legendFocus); }
   screenToWorld(mx,my){ return { x:(mx-this.t.x)/this.t.k, y:(my-this.t.y)/this.t.k }; }
   nodeAt(mx,my){
     const w=this.screenToWorld(mx,my);
@@ -1019,7 +1043,7 @@ function renderOverview() {
   if (mc) {
     if (miniSim) miniSim.stop();
     miniSim = new GraphSim(mc, { interactive:false, showLabels:false, compact:true });
-    miniSim.setData(cs, 'industry');
+    miniSim.setData(cs, IND_SPEC);
     miniSim.start();
   }
 }
@@ -1028,18 +1052,32 @@ function heroCard(fig, cap, sub, spark) {
 }
 
 /* =========================================================================
-   RENDER — Industry (force graph)
+   RENDER — graph legends (Industry + Circles)
    ========================================================================= */
-function renderLegend() {
-  const cs = filtered();
-  const inds = industryBreakdown(cs);
-  const lg = $('#legend'); lg.innerHTML = '<h4>Industry</h4>';
-  inds.forEach(b=>{
+function paintLegend(sel, title, items, note) {
+  const lg = $(sel); lg.innerHTML = `<h4>${title}</h4>`;
+  items.forEach(b=>{
     const row = el('div','lrow'+(state.legendFocus && state.legendFocus!==b.key?' dim':''),
-      `<span class="sw" style="background:${industryColor(b.key)}"></span><span class="ln">${esc(b.label)}</span><span class="lc mono">${b.count}</span>`);
-    row.onclick = ()=>{ state.legendFocus = state.legendFocus===b.key?null:b.key; renderLegend(); };
+      `<span class="sw" style="background:${b.color}"></span><span class="ln">${esc(b.label)}</span><span class="lc mono">${b.count}</span>`);
+    row.onclick = ()=>{ state.legendFocus = state.legendFocus===b.key?null:b.key; paintLegend(sel, title, items, note); };
     lg.append(row);
   });
+  if (note) lg.append(el('div','legend-note', note));
+}
+function renderLegend() {
+  const inds = industryBreakdown(filtered());
+  paintLegend('#legend', 'Industry', inds.map(b=>({key:b.key,label:b.label,count:b.count,color:industryColor(b.key)})));
+}
+function tagCounts(cs) {
+  const m = new Map(); let untag = 0;
+  for (const c of cs){ if (c.tags.length){ for (const t of c.tags) m.set(t,(m.get(t)||0)+1); } else untag++; }
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  const arr = [...m.entries()].map(([k,v])=>({key:k,label:k,count:v,color:accent})).sort((a,b)=>b.count-a.count);
+  if (untag) arr.push({ key:'_untagged', label:'Untagged', count:untag, color:'var(--neutral)' });
+  return arr;
+}
+function renderCirclesLegend() {
+  paintLegend('#legendCircles', 'Circles', tagCounts(filtered()), 'Nodes colored by industry · lines show shared circles');
 }
 
 /* =========================================================================
@@ -1202,13 +1240,19 @@ function resetSample() { state.contacts = SAMPLE.map(normalize); state.selectedI
 /* =========================================================================
    VIEW ORCHESTRATION
    ========================================================================= */
-let industrySim = null, miniSim = null;
+let industrySim = null, circlesSim = null, miniSim = null;
+// Layout specs consumed by GraphSim. Colors resolve at call time, so a theme
+// toggle that re-runs setData repaints correctly.
+const IND_SPEC = { groupsOf:c=>[c.industry], hubLabel:k=>INDUSTRY_LABEL[k]||k, colorOf:c=>industryColor(c.industry) };
+const TAG_SPEC = { groupsOf:c=> c.tags.length ? c.tags : ['_untagged'], hubLabel:k=> k==='_untagged'?'Untagged':k, colorOf:c=>industryColor(c.industry) };
+
 function refreshData() {
   $('#navCount').textContent = state.contacts.length;
   renderChips();
   const v = state.view;
   if (v==='overview') renderOverview();
-  if (v==='industry'){ renderLegend(); if(industrySim){ industrySim.setData(filtered(),'industry'); } }
+  if (v==='industry'){ renderLegend(); if(industrySim) industrySim.setData(filtered(), IND_SPEC); }
+  if (v==='circles'){ renderCirclesLegend(); if(circlesSim) circlesSim.setData(filtered(), TAG_SPEC); }
   if (v==='geography') renderGeography();
   if (v==='rolodex') renderRolodex();
 }
@@ -1219,14 +1263,21 @@ function setView(v) {
   renderChips();
   document.querySelectorAll('.nav-item[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
   document.querySelectorAll('.view').forEach(sec=>sec.classList.toggle('show', sec.id==='view-'+v));
-  // sims lifecycle
+  // sims lifecycle — only the visible graph runs
   if (miniSim){ miniSim.stop(); miniSim=null; }
-  if (industrySim){ industrySim.stop(); }
+  if (industrySim && v!=='industry') industrySim.stop();
+  if (circlesSim && v!=='circles') circlesSim.stop();
+  state.legendFocus = null;
   if (v==='overview') renderOverview();
   if (v==='industry') {
     renderLegend();
     if (!industrySim) { industrySim = new GraphSim($('#graph')); industrySim.onSelect = select; }
-    industrySim.setData(filtered(), 'industry'); industrySim.start();
+    industrySim.setData(filtered(), IND_SPEC); industrySim.start();
+  }
+  if (v==='circles') {
+    renderCirclesLegend();
+    if (!circlesSim) { circlesSim = new GraphSim($('#graphCircles')); circlesSim.onSelect = select; }
+    circlesSim.setData(filtered(), TAG_SPEC); circlesSim.start();
   }
   if (v==='geography') renderGeography();
   if (v==='rolodex') renderRolodex();
@@ -1241,7 +1292,8 @@ window.addEventListener('keydown', e=>{
   if (e.key==='1') setView('overview');
   if (e.key==='2') setView('industry');
   if (e.key==='3') setView('geography');
-  if (e.key==='4') setView('rolodex');
+  if (e.key==='4') setView('circles');
+  if (e.key==='5') setView('rolodex');
   if (e.key==='Escape') select(null);
   if (e.key==='/') { e.preventDefault(); $('#searchInput').focus(); }
 });
@@ -1304,6 +1356,9 @@ $('#loadSample').onclick = ()=>{ resetSample(); closeModal('importModal'); };
 $('#gZoomIn').onclick = ()=> industrySim && industrySim.zoom(1.2);
 $('#gZoomOut').onclick = ()=> industrySim && industrySim.zoom(0.83);
 $('#gFit').onclick = ()=> industrySim && industrySim.fit();
+$('#cZoomIn').onclick = ()=> circlesSim && circlesSim.zoom(1.2);
+$('#cZoomOut').onclick = ()=> circlesSim && circlesSim.zoom(0.83);
+$('#cFit').onclick = ()=> circlesSim && circlesSim.fit();
 
 /* =========================================================================
    BOOT
