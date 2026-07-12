@@ -2,33 +2,52 @@
 
 A visualization-first tool to understand the **shape** of your professional
 network. Import your contacts and explore them re-projected through different
-lenses — the same people, grouped and colored three different ways.
+lenses — the same people, grouped and colored several different ways.
 
-This is a **v1 prototype**: React + Vite, no backend, all state in `localStorage`.
+No backend; all state lives in `localStorage`. Sample data (~40 contacts across
+industries and cities) loads on first run, so every view is populated
+immediately.
 
-## Run it
+## Two ways to run it
+
+**1. Interactive prototype (fastest — no build)** — `prototype.html` is a
+single, dependency-free file. Open it in any browser, or view the hosted
+version. It has the fullest, most polished UX (see the lenses below), a custom
+canvas force-graph, light/dark theming, keyboard shortcuts (1–5), and JSON/CSV
+export. This is the version to open when you want to *see and critique* the
+tool.
+
+**2. React + Vite app (structured source)** — the `src/` tree is the componentized
+implementation, good for extending the data/inference layer.
 
 ```bash
 npm install
 npm run dev      # http://localhost:5173
 ```
 
-Sample data (~40 contacts across industries and cities) loads on first run, so
-every view is populated immediately. Your edits/imports persist in the browser.
-
-## The three lenses
+## The lenses
 
 One shared contact store; each lens only changes how contacts are grouped,
-colored, and laid out — never the underlying data.
+colored, and laid out — never the underlying data. Selection is continuous:
+click a person in any lens and they stay highlighted when you switch. (The
+Overview and Circles lenses are in `prototype.html`.)
 
+- **Overview** — "network at a glance": hero readouts, industry composition,
+  strength distribution, top cities, a live mini-constellation, and generated
+  highlights (including who *bridges the most circles*). Click an industry or a
+  city to drill straight into it.
 - **Industry** — force-clustered graph, one labeled cluster per inferred
-  industry, node size = relationship strength.
-- **Geographic** — grouped region/city clusters (cards) with a top-cities and
-  concentration readout. *Map-ready:* contacts carry a reserved `latLng` and the
-  layout is isolated to one component so a real map drops in without touching the
-  rest of the app.
-- **Rolodex** — searchable, sortable table of every connection with all
-  attributes and group memberships; click any row to inspect or correct.
+  industry, node size = relationship strength; hover for detail, pan/zoom, focus
+  a cluster from the legend.
+- **Geographic** — grouped region/city clusters (cards) with top-cities and
+  concentration readouts. *Map-ready:* contacts carry a reserved `latLng` and the
+  layout is isolated so a real map drops in without touching the rest of the app.
+- **Circles** — the **social lens**. People cluster by *shared context* (tags
+  like college, climbing, founder); someone in two circles sits between them,
+  surfacing overlap and natural introducers. Built on multi-hub membership in the
+  force engine.
+- **Rolodex** — searchable, sortable table of every connection; click a row to
+  inspect/correct, or a tag to filter to that circle.
 
 Each view carries a compact insight panel that surfaces the "so what," not just
 dots on a screen.
@@ -60,8 +79,9 @@ Everything meant to grow later is deliberately isolated:
 Reserved-but-unused fields (`latLng`, `lastContacted`) already travel with each
 contact, so the real map and a recency/CRM layer are additive.
 
-## Out of scope for v1
+## Roadmap
 
-Social/mutual-connection clustering, real geocoded map, LLM classification,
-recency/CRM, intro-pathfinding — all have clear extension points and none require
-a rewrite.
+Done: the social/circles lens (shared-context clustering). Still ahead, each
+with a clear extension point and no rewrite required — a real geocoded map,
+LLM-based industry/region classification, recency/CRM signals, and
+intro-pathfinding ("who can introduce me to someone at X").

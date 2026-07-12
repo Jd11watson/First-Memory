@@ -69,6 +69,8 @@
   .mono { font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace; }
   button { font: inherit; cursor: pointer; color: inherit; }
   ::selection { background: color-mix(in srgb, var(--accent) 24%, transparent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .empty { flex-direction: column; }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
   /* ---------------- App frame ---------------- */
@@ -771,6 +773,12 @@ function toast(msg) {
   clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove('show'), 1900);
 }
 
+function clearFilters() {
+  state.filters = { search:'', industry:'', region:'', city:'', tag:'', minStrength:1 };
+  const si = $('#searchInput'); if (si){ si.value=''; $('#searchBox').classList.remove('has-value'); }
+  refreshData();
+}
+
 /* =========================================================================
    FORCE SIM  (dependency-free, anchored-cluster layout)
    ========================================================================= */
@@ -995,7 +1003,7 @@ function renderChips() {
   const cnt = filtered().length;
   const r = el('span','result', `<b class="mono">${cnt}</b> of <span class="mono">${state.contacts.length}</span>`);
   if (f.industry||f.region||f.city||f.tag||f.search||f.minStrength>1) {
-    const clr = el('button','chip','Clear ✕'); clr.onclick=()=>{ state.filters={search:'',industry:'',region:'',city:'',tag:'',minStrength:1}; $('#searchInput').value=''; $('#searchBox').classList.remove('has-value'); rerender(); };
+    const clr = el('button','chip','Clear ✕'); clr.onclick=clearFilters;
     wrap.append(clr);
   }
   wrap.append(r);
@@ -1011,6 +1019,12 @@ function sparkBars(vals, color) {
 function renderOverview() {
   const cs = filtered();
   const root = $('#view-overview');
+  if (!cs.length) {
+    root.innerHTML = `<div class="empty"><div>No contacts match the current filters.<br><button class="btn" id="ovClear" style="margin-top:14px">Clear filters</button></div></div>`;
+    $('#ovClear').onclick = clearFilters;
+    if (miniSim){ miniSim.stop(); miniSim = null; }
+    return;
+  }
   const inds = industryBreakdown(cs), regs = regionBreakdown(cs), cities = cityBreakdown(cs);
   const div = diversity(inds);
   const strong = cs.filter(c=>c.strength>=4).length;
