@@ -822,7 +822,13 @@ class GraphSim {
         vx:0, vy:0, r: 4.5 + (c.strength-1)*1.35,
       };
     });
-    this.alpha = 1; this.needsFit = true;
+    // Only re-frame + fully re-heat when the node/hub set actually changes (a
+    // filter). An in-place edit keeps the same set — settle gently and DON'T
+    // re-fit, so editing a contact doesn't yank the whole view around.
+    const sig = contacts.map(c=>c.id).sort().join(',') + '|' + keys.slice().sort().join(',');
+    const changed = sig !== this._sig; this._sig = sig;
+    this.alpha = changed ? 1 : 0.18;
+    this.needsFit = changed;
   }
   start(){ if(this.running)return; this.running=true; this._resize(); requestAnimationFrame(this._raf); }
   stop(){ this.running=false; }
