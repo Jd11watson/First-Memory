@@ -403,6 +403,8 @@
   .imp-status { margin-top: 12px; font-size: 13px; }
   .imp-status.ok { color: var(--good); }
   .imp-status.err { color: #d03b3b; }
+  .export-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .export-label { font-size: 12.5px; color: var(--ink-2); margin-right: auto; }
 
   .empty { display: grid; place-items: center; height: 100%; color: var(--ink-3); text-align: center; padding: 40px; }
 
@@ -413,12 +415,19 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   @media (max-width: 1080px) {
-    .app { grid-template-columns: 68px 1fr; }
-    .brand h1, .brand .tag, .nav-item span.txt, .nav-group-label, .nav-count, .nav-item .kbd { display: none; }
+    .app { grid-template-columns: 64px 1fr; }
+    .brand { padding: 6px 4px 14px; }
+    .brand h1, .brand .brand-sub, .nav-item span.txt, .nav-group-label, .nav-count span, .nav-item .kbd { display: none; }
     .nav-item { justify-content: center; }
+    .topbar { flex-wrap: wrap; gap: 8px; }
+    .search { min-width: 0; flex: 1 1 180px; }
     .ov-hero { grid-template-columns: repeat(2, 1fr); }
     .ov-grid { grid-template-columns: 1fr; }
-    .insights { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .topbar .btn { font-size: 0; padding: 8px 10px; }  /* topbar actions become icon-only */
+    .topbar .btn svg { width: 17px; height: 17px; }
+    .ov { padding: 18px 16px 32px; }
   }
 </style>
 
@@ -564,6 +573,11 @@
       <input id="csvFile" type="file" accept=".csv,text/csv" style="display:none"/>
     </label>
     <div class="imp-status" id="impStatus"></div>
+    <div class="export-row">
+      <span class="export-label">Export your data</span>
+      <button class="btn" id="exportJson">JSON</button>
+      <button class="btn" id="exportCsv">CSV</button>
+    </div>
     <div class="m-actions">
       <button class="btn" data-close>Close</button>
       <button class="btn" id="loadSample">Reset to sample data</button>
@@ -974,6 +988,10 @@ function renderChips() {
     const c = el('button','chip active', `${esc(f.city)} <span class="x">✕</span>`);
     c.onclick = ()=>{ f.city=''; rerender(); }; wrap.append(c);
   }
+  if (f.tag) {
+    const c = el('button','chip active', `# ${esc(f.tag)} <span class="x">✕</span>`);
+    c.onclick = ()=>{ f.tag=''; rerender(); }; wrap.append(c);
+  }
   const cnt = filtered().length;
   const r = el('span','result', `<b class="mono">${cnt}</b> of <span class="mono">${state.contacts.length}</span>`);
   if (f.industry||f.region||f.city||f.tag||f.search||f.minStrength>1) {
@@ -1170,11 +1188,12 @@ function renderRolodex() {
         <td><span class="pill"><span class="dot" style="background:${industryColor(c.industry)}"></span>${INDUSTRY_LABEL[c.industry]}${c.industryOverride?' <span class="edited">✎</span>':''}</span></td>
         <td><div>${esc(c.city||'—')}</div><div class="loc-sub">${REGION_SHORT[c.region]}</div></td>
         <td><span class="sdots">${[1,2,3,4,5].map(i=>`<i class="${i<=c.strength?'on':''}"></i>`).join('')}</span></td>
-        <td><div class="tags">${c.tags.length?c.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join(''):'<span class="loc-sub">—</span>'}</div></td>
+        <td><div class="tags">${c.tags.length?c.tags.map(t=>`<span class="tag" data-tag="${esc(t)}" title="Filter by ${esc(t)}">${esc(t)}</span>`).join(''):'<span class="loc-sub">—</span>'}</div></td>
       </tr>`).join('')}</tbody>
   </table></div>`;
   root.querySelectorAll('th[data-k]').forEach(th=> th.onclick=()=>{ const k=th.dataset.k; if(roloSort.key===k)roloSort.dir*=-1; else {roloSort.key=k;roloSort.dir=1;} renderRolodex(); });
   root.querySelectorAll('tr[data-id]').forEach(tr=> tr.onclick=()=>select(tr.dataset.id));
+  root.querySelectorAll('.tag[data-tag]').forEach(t=> t.onclick=(e)=>{ e.stopPropagation(); state.filters.tag = t.dataset.tag; refreshData(); toast(`Filtered to “${t.dataset.tag}”`); });
 }
 
 /* =========================================================================
@@ -1321,6 +1340,10 @@ function setView(v) {
    ========================================================================= */
 document.querySelectorAll('.nav-item[data-view]').forEach(b=> b.onclick=()=>setView(b.dataset.view));
 window.addEventListener('keydown', e=>{
+  if (e.key==='Escape') {
+    const open = document.querySelector('.backdrop.open');
+    if (open) { open.classList.remove('open'); return; }
+  }
   if (e.target.matches('input,textarea,select')) { if(e.key==='Escape')e.target.blur(); return; }
   if (e.key==='1') setView('overview');
   if (e.key==='2') setView('industry');
@@ -1384,6 +1407,26 @@ const drop=$('#drop');
 ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('hot');}));
 drop.addEventListener('drop', e=>handleFile(e.dataTransfer.files?.[0]));
 $('#loadSample').onclick = ()=>{ resetSample(); closeModal('importModal'); };
+
+/* Export */
+function download(name, text, type) {
+  const blob = new Blob([text], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+const csvCell = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; };
+$('#exportJson').onclick = ()=>{ download('network-rolodex.json', JSON.stringify(state.contacts, null, 2), 'application/json'); toast('Exported JSON'); };
+$('#exportCsv').onclick = ()=>{
+  const cols = ['name','company','title','industry','city','country','region','strength','tags','notes','source'];
+  const head = ['Name','Company','Title','Industry','City','Country','Region','Strength','Tags','Notes','Source'];
+  const lines = [head.join(',')];
+  for (const c of state.contacts) {
+    lines.push(cols.map(k=> csvCell(k==='tags' ? c.tags.join('; ') : k==='industry' ? INDUSTRY_LABEL[c.industry] : k==='region' ? REGION_LABEL[c.region] : c[k])).join(','));
+  }
+  download('network-rolodex.csv', lines.join('\n'), 'text/csv');
+  toast('Exported CSV');
+};
 
 /* Graph controls */
 $('#gZoomIn').onclick = ()=> industrySim && industrySim.zoom(1.2);
