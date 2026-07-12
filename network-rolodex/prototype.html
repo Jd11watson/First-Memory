@@ -231,7 +231,7 @@
 
   .mini-wrap { position: relative; height: 264px; border-radius: 12px; overflow: hidden;
     background: radial-gradient(120% 120% at 50% 20%, color-mix(in srgb, var(--accent-soft) 55%, transparent), transparent 70%); }
-  .mini-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mini-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: default; }
 
   .cities { display: flex; flex-direction: column; gap: 2px; }
   .cityrow { display: flex; align-items: center; gap: 10px; padding: 7px 6px; border-radius: 8px; }
@@ -399,6 +399,33 @@
   .modal .msub { color: var(--ink-3); font-size: 12.5px; margin-bottom: 18px; line-height: 1.5; }
   .modal .msub code { background: var(--bg); padding: 1px 5px; border-radius: 4px; font-size: 11.5px; }
   .m-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+  /* Capture (add people) flow */
+  .modal.capture { max-width: 520px; }
+  .ctx-block { margin-bottom: 12px; }
+  .ctx-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); font-weight: 600; margin-bottom: 7px; }
+  .ctx-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .ctx-chip { border: 1px solid var(--line-2); background: var(--panel); color: var(--ink-2); border-radius: 999px; padding: 6px 12px; font-size: 12.5px; font-weight: 550; transition: background .12s, border-color .12s, color .12s; }
+  .ctx-chip:hover { color: var(--ink); border-color: var(--accent); }
+  .ctx-chip.active { background: var(--accent); border-color: transparent; color: var(--accent-ink); }
+  .ctx-chip .cc-count { opacity: .6; margin-left: 3px; }
+  .ctx-active { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; }
+  .ctx-active .ca-tag { font-size: 12.5px; color: var(--ink); font-weight: 600; }
+  .ctx-active input { flex: 1; min-width: 130px; font: inherit; font-size: 13px; color: var(--ink); background: var(--elevated); border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; }
+  .ctx-active .ca-clear { margin-left: auto; border: none; background: none; color: var(--ink-3); font-size: 13px; }
+  .ctx-active .ca-clear:hover { color: var(--ink); }
+  .cap-input-wrap input { width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--elevated); border: 1px solid var(--line-2); border-radius: 10px; padding: 11px 13px; transition: border-color .12s, box-shadow .12s; }
+  .cap-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .added-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; min-height: 4px; }
+  .added-chip { display: inline-flex; align-items: center; gap: 7px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px 6px 4px 11px; font-size: 12.5px; animation: pop .18s ease; }
+  .added-chip .ac-x { border: none; background: none; color: var(--ink-3); width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; }
+  .added-chip .ac-x:hover { background: var(--hover); color: var(--ink); }
+  @keyframes pop { from { transform: scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+  .added-count { font-size: 11.5px; color: var(--ink-3); width: 100%; margin-top: 2px; }
+  .detail-add { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 6px; }
+  .detail-add summary { cursor: pointer; font-size: 12.5px; color: var(--ink-2); padding: 8px 0; list-style: none; font-weight: 550; }
+  .detail-add summary::-webkit-details-marker { display: none; }
+  .detail-add summary::before { content: '＋ '; color: var(--ink-3); }
+  .detail-add[open] summary::before { content: '－ '; }
   .drop { border: 1.5px dashed var(--line-2); border-radius: 12px; padding: 26px; text-align: center; color: var(--ink-2); background: var(--panel); transition: border-color .12s, background .12s; cursor: pointer; }
   .drop:hover, .drop.hot { border-color: var(--accent); background: var(--accent-soft); }
   .drop strong { color: var(--ink); }
@@ -553,25 +580,46 @@
 <div class="toast" id="toast"></div>
 
 <div class="backdrop" id="addModal">
-  <div class="modal">
-    <h2>Add contact</h2>
-    <div class="msub">Industry and region are classified automatically — adjust them afterward in the detail panel if needed.</div>
-    <div class="fld"><label>Name</label><input id="a_name" placeholder="Jane Rivera" autocomplete="off"/></div>
-    <div class="row2">
-      <div class="fld"><label>Company</label><input id="a_company" autocomplete="off"/></div>
-      <div class="fld"><label>Title</label><input id="a_title" autocomplete="off"/></div>
+  <div class="modal capture">
+    <h2>Add people</h2>
+    <div class="msub">Jog your memory — pick a context, then type names and press Enter. Add as many as you like; each is tagged so it lands in the right circle.</div>
+
+    <div class="ctx-block" id="ctxSuggestedBlock">
+      <div class="ctx-label">Suggested from your network</div>
+      <div class="ctx-chips" id="ctxSuggested"></div>
     </div>
-    <div class="row2">
-      <div class="fld"><label>City</label><input id="a_city" autocomplete="off"/></div>
-      <div class="fld"><label>Country</label><input id="a_country" autocomplete="off"/></div>
+    <div class="ctx-block">
+      <div class="ctx-label">Or start from a context</div>
+      <div class="ctx-chips" id="ctxCommon"></div>
     </div>
-    <div class="row2">
-      <div class="fld"><label>Strength</label><select id="a_strength"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
-      <div class="fld"><label>Tags (comma-separated)</label><input id="a_tags" autocomplete="off"/></div>
+
+    <div class="ctx-active" id="ctxActive" hidden></div>
+
+    <div class="cap-input-wrap">
+      <input id="capName" placeholder="Type a name, press Enter to add…" autocomplete="off"/>
     </div>
+    <div class="added-list" id="addedList"></div>
+
+    <details class="detail-add">
+      <summary>Add one person with full details</summary>
+      <div class="fld"><label>Name</label><input id="a_name" placeholder="Jane Rivera" autocomplete="off"/></div>
+      <div class="row2">
+        <div class="fld"><label>Company</label><input id="a_company" autocomplete="off"/></div>
+        <div class="fld"><label>Title</label><input id="a_title" autocomplete="off"/></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label>City</label><input id="a_city" autocomplete="off"/></div>
+        <div class="fld"><label>Country</label><input id="a_country" autocomplete="off"/></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label>Strength</label><select id="a_strength"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+        <div class="fld"><label>Tags (comma-separated)</label><input id="a_tags" autocomplete="off"/></div>
+      </div>
+      <button class="btn primary" id="a_save" style="width:100%;margin-top:4px">Add with details</button>
+    </details>
+
     <div class="m-actions">
-      <button class="btn" data-close>Cancel</button>
-      <button class="btn primary" id="a_save">Add contact</button>
+      <button class="btn primary" data-close>Done</button>
     </div>
   </div>
 </div>
@@ -807,14 +855,19 @@ function clearFilters() {
    FORCE SIM  (dependency-free, anchored-cluster layout)
    ========================================================================= */
 class GraphSim {
-  constructor(canvas, { interactive=true, showLabels=true, compact=false } = {}) {
+  constructor(canvas, opts = {}) {
+    const { interactive=true, showLabels=true, compact=false, pannable, hover, clickable } = opts;
     this.canvas = canvas; this.ctx = canvas.getContext('2d');
-    this.interactive = interactive; this.showLabels = showLabels; this.compact = compact;
+    this.showLabels = showLabels; this.compact = compact;
+    // granular interaction: the full graphs pan/zoom; the mini map only hovers+clicks
+    this.optPan = pannable ?? interactive;
+    this.optHover = hover ?? interactive;
+    this.optClick = clickable ?? interactive;
     this.nodes = []; this.hubs = new Map();
     this.t = { x:0, y:0, k:1 }; this.dpr = Math.min(2, window.devicePixelRatio||1);
     this.hover = null; this.running = false; this.needsFit = true;
     this.onSelect = null;
-    if (interactive) this._bind();
+    if (this.optPan || this.optHover || this.optClick) this._bind();
     this._raf = this._raf.bind(this);
   }
   // Generic layout. opts: { groupsOf(c)->[hubKeys], hubLabel(k)->str, colorOf(c)->hex }
@@ -966,14 +1019,14 @@ class GraphSim {
     cv.addEventListener('mousedown', e=>{ drag={x:e.clientX,y:e.clientY,tx:this.t.x,ty:this.t.y,moved:false}; });
     window.addEventListener('mousemove', e=>{
       const r=cv.getBoundingClientRect(); const mx=e.clientX-r.left, my=e.clientY-r.top;
-      if (drag){ const dx=e.clientX-drag.x, dy=e.clientY-drag.y; if(Math.hypot(dx,dy)>3)drag.moved=true; this.t.x=drag.tx+dx; this.t.y=drag.ty+dy; }
-      if (this.running && (mx>=0&&my>=0&&mx<=r.width&&my<=r.height)) this._hoverTest(nd=>this.hover=nd, mx,my,e.clientX,e.clientY);
+      if (drag){ const dx=e.clientX-drag.x, dy=e.clientY-drag.y; if(Math.hypot(dx,dy)>3)drag.moved=true; if(this.optPan){ this.t.x=drag.tx+dx; this.t.y=drag.ty+dy; } }
+      if (this.optHover && this.running && (mx>=0&&my>=0&&mx<=r.width&&my<=r.height)) this._hoverTest(nd=>this.hover=nd, mx,my,e.clientX,e.clientY);
     });
     window.addEventListener('mouseup', e=>{
-      if (drag && !drag.moved){ const r=cv.getBoundingClientRect(); const nd=this.nodeAt(e.clientX-r.left, e.clientY-r.top); if(nd&&this.onSelect)this.onSelect(nd.contact.id); else if(this.onSelect&&!nd)this.onSelect(null); }
+      if (this.optClick && drag && !drag.moved){ const r=cv.getBoundingClientRect(); const nd=this.nodeAt(e.clientX-r.left, e.clientY-r.top); if(nd&&this.onSelect)this.onSelect(nd.contact.id); else if(this.onSelect&&!nd)this.onSelect(null); }
       drag=null;
     });
-    cv.addEventListener('wheel', e=>{
+    if (this.optPan) cv.addEventListener('wheel', e=>{
       e.preventDefault(); const r=cv.getBoundingClientRect(); const mx=e.clientX-r.left, my=e.clientY-r.top;
       const f=e.deltaY<0?1.12:0.89; const nk=Math.max(0.2,Math.min(4,this.t.k*f));
       this.t.x = mx - (mx-this.t.x)*(nk/this.t.k); this.t.y = my - (my-this.t.y)*(nk/this.t.k); this.t.k=nk;
@@ -1104,7 +1157,7 @@ function renderOverview() {
       </div>
 
       <div class="card">
-        <div class="card-h"><h3>Reach</h3><span class="meta">live map</span></div>
+        <div class="card-h"><h3>Reach</h3><span class="meta">hover or click a contact</span></div>
         <div class="mini-wrap"><canvas id="miniGraph"></canvas></div>
         <div class="card-h" style="margin:20px 0 8px"><h3 style="font-size:13px">Top cities</h3></div>
         <div class="cities">
@@ -1137,7 +1190,8 @@ function renderOverview() {
   const mc = $('#miniGraph');
   if (mc) {
     if (miniSim) miniSim.stop();
-    miniSim = new GraphSim(mc, { interactive:false, showLabels:false, compact:true });
+    miniSim = new GraphSim(mc, { showLabels:false, compact:true, pannable:false, hover:true, clickable:true });
+    miniSim.onSelect = select;
     miniSim.setData(cs, IND_SPEC);
     miniSim.start();
   }
@@ -1319,7 +1373,7 @@ function update(id, patch) {
 }
 function addContact(p) {
   const c = normalize({...p, source:'manual'});
-  state.contacts.push(c); persist(); refreshData(); toast('Contact added');
+  state.contacts.push(c); persist(); refreshData();
   return c;
 }
 function importMany(rows) {
@@ -1416,14 +1470,108 @@ document.querySelectorAll('.backdrop').forEach(bd=>{
   bd.addEventListener('click', e=>{ if(e.target===bd) bd.classList.remove('open'); });
   bd.querySelectorAll('[data-close]').forEach(b=> b.onclick=()=>bd.classList.remove('open'));
 });
-$('#addBtn').onclick = ()=>openModal('addModal');
 $('#importBtn').onclick = ()=>{ $('#impStatus').textContent=''; openModal('importModal'); };
+
+/* =========================================================================
+   CAPTURE — fast, memory-jogging manual entry with contextual suggestions
+   ========================================================================= */
+// Each context pre-tags added people (and sometimes sets a real field), so a
+// brain-dump lands in the right circle without extra typing.
+const CONTEXTS = [
+  { key:'coworker',  label:'Coworker',      field:{label:'Company',                ph:'e.g. Acme Corp'},        patch:v=>({ company:v||'', tags:['coworker'] }) },
+  { key:'classmate', label:'Classmate',     field:{label:'School / University',     ph:'e.g. Stanford, Lincoln High'}, patch:v=>({ tags:['classmate', ...(v?[v]:[])] }) },
+  { key:'neighbor',  label:'Neighbor',      field:{label:'Neighborhood or city',    ph:'e.g. Brooklyn'},         patch:v=>({ city:v||'', tags:['neighbor'] }) },
+  { key:'family',    label:'Family',        field:null,                                                          patch:()=>({ tags:['family'], strength:4 }) },
+  { key:'friend',    label:'Friend',        field:{label:'Circle (optional)',       ph:'e.g. book club'},        patch:v=>({ tags:['friend', ...(v?[v]:[])] }) },
+  { key:'hobby',     label:'Team / hobby',  field:{label:'Team or activity',        ph:'e.g. soccer, choir'},    patch:v=>({ tags:[...(v?[v]:['hobby'])] }) },
+];
+let capCtx = null, capField = '', capAdded = [];
+
+function suggestedContexts() {
+  // top companies you already have → "Coworkers · X"; existing circles → tag chips
+  const out = [];
+  const companies = sortedList(countBy(state.contacts, c=>c.company), k=>k).filter(c=>c.key && c.key.length>1).slice(0,3);
+  companies.forEach(c=> out.push({ label:`Coworkers · ${c.label}`, count:c.count, ctx:'coworker', prefill:c.key }));
+  const tags = tagCounts(state.contacts).filter(t=>t.key!=='_untagged' && !['instagram','linkedin','mutual','ig-follower','ig-following'].includes(t.key)).slice(0,3);
+  tags.forEach(t=> out.push({ label:`${t.label} circle`, count:t.count, ctx:'friend', prefill:t.key }));
+  return out.slice(0,5);
+}
+function renderCaptureChips() {
+  const sug = suggestedContexts();
+  const sb = $('#ctxSuggestedBlock'); sb.style.display = sug.length ? '' : 'none';
+  const s = $('#ctxSuggested'); s.innerHTML='';
+  sug.forEach(g=>{
+    const chip = el('button','ctx-chip', `${esc(g.label)}<span class="cc-count mono">${g.count}</span>`);
+    chip.onclick = ()=> setContext(g.ctx, g.prefill);
+    s.append(chip);
+  });
+  const c = $('#ctxCommon'); c.innerHTML='';
+  CONTEXTS.forEach(ctx=>{
+    const chip = el('button','ctx-chip', esc(ctx.label));
+    chip.dataset.k = ctx.key;
+    chip.onclick = ()=> setContext(ctx.key, '', '');
+    c.append(chip);
+  });
+}
+function setContext(key, prefill) {
+  capCtx = CONTEXTS.find(c=>c.key===key) || null;
+  capField = prefill || '';
+  document.querySelectorAll('#ctxCommon .ctx-chip').forEach(ch=> ch.classList.toggle('active', ch.dataset.k===key));
+  renderCtxActive();
+  $('#capName').focus();
+}
+function renderCtxActive() {
+  const box = $('#ctxActive');
+  if (!capCtx){ box.hidden = true; box.innerHTML=''; return; }
+  box.hidden = false; box.innerHTML='';
+  box.append(el('span','ca-tag', `Adding as: ${esc(capCtx.label)}`));
+  if (capCtx.field){
+    const inp = el('input'); inp.placeholder = capCtx.field.ph; inp.value = capField; inp.setAttribute('aria-label', capCtx.field.label);
+    inp.oninput = e=> capField = e.target.value;
+    inp.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); $('#capName').focus(); } };
+    box.append(inp);
+  }
+  const clr = el('button','ca-clear','Clear'); clr.onclick = ()=> setContext(null,'');
+  box.append(clr);
+}
+function capturePerson(name) {
+  name = name.trim(); if(!name) return;
+  const patch = capCtx ? capCtx.patch(capField.trim()) : {};
+  patch.tags = (patch.tags||[]).map(s=>String(s).trim()).filter(Boolean);
+  const c = addContact({ name, ...patch, strength: patch.strength || 3 });
+  capAdded.unshift({ id:c.id, name });
+  renderAdded();
+}
+function renderAdded() {
+  const list = $('#addedList'); list.innerHTML='';
+  if (!capAdded.length) return;
+  list.append(el('span','added-count', `Added ${capAdded.length} ${capAdded.length===1?'person':'people'} this session`));
+  capAdded.forEach(a=>{
+    const chip = el('span','added-chip', `${esc(a.name)}`);
+    const x = el('button','ac-x','✕'); x.setAttribute('aria-label',`Remove ${a.name}`);
+    x.onclick = ()=>{ removeContact(a.id); capAdded = capAdded.filter(z=>z.id!==a.id); renderAdded(); };
+    chip.append(x); list.append(chip);
+  });
+}
+function openCapture() {
+  capCtx = null; capField=''; capAdded=[];
+  renderCaptureChips(); renderCtxActive(); renderAdded();
+  $('#capName').value='';
+  openModal('addModal');
+  setTimeout(()=>$('#capName').focus(), 60);
+}
+$('#addBtn').onclick = openCapture;
+$('#capName').addEventListener('keydown', e=>{
+  if (e.key==='Enter'){ e.preventDefault(); capturePerson(e.target.value); e.target.value=''; }
+});
+// detailed single add (inside the <details>) — adds without closing so you can keep going
 $('#a_save').onclick = ()=>{
   const name = $('#a_name').value.trim(); if(!name){ $('#a_name').focus(); return; }
-  addContact({ name, company:$('#a_company').value, title:$('#a_title').value, city:$('#a_city').value, country:$('#a_country').value,
+  const c = addContact({ name, company:$('#a_company').value, title:$('#a_title').value, city:$('#a_city').value, country:$('#a_country').value,
     strength:+$('#a_strength').value, tags:$('#a_tags').value.split(',').map(s=>s.trim()).filter(Boolean) });
+  capAdded.unshift({ id:c.id, name }); renderAdded();
   ['a_name','a_company','a_title','a_city','a_country','a_tags'].forEach(id=>$('#'+id).value=''); $('#a_strength').value='3';
-  closeModal('addModal');
+  $('#a_name').focus();
 };
 
 /* ---- LinkedIn CSV ---- */
