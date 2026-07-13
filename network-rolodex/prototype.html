@@ -448,6 +448,23 @@
 
   .empty { display: grid; place-items: center; height: 100%; color: var(--ink-3); text-align: center; padding: 40px; }
 
+  /* First-run welcome */
+  .welcome { position: absolute; inset: 0; z-index: 20; background: var(--bg); display: none; align-items: center; justify-content: center; padding: 32px; overflow: auto; }
+  .app.is-empty .welcome { display: flex; }
+  .app.is-empty .chips { display: none; }
+  .wc-card { max-width: 520px; text-align: center; }
+  .wc-glyph { width: 46px; height: 46px; margin-bottom: 18px; }
+  .wc-card h2 { font-size: 27px; letter-spacing: -.03em; margin: 0 0 12px; text-wrap: balance; }
+  .wc-card p { color: var(--ink-2); font-size: 15px; line-height: 1.6; margin: 0 auto 26px; max-width: 440px; }
+  .wc-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+  .btn.lg { padding: 11px 18px; border-radius: 11px; font-size: 14px; }
+  .wc-steps { display: flex; flex-direction: column; gap: 11px; text-align: left; max-width: 400px; margin: 0 auto 26px; }
+  .wc-step { display: flex; align-items: flex-start; gap: 11px; font-size: 13.5px; color: var(--ink-2); }
+  .wc-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; margin-top: 6px; }
+  .wc-sample { border: none; background: none; color: var(--ink-3); font-size: 13px; padding: 6px; }
+  .wc-sample:hover { color: var(--accent); }
+  @media (max-width: 560px) { .wc-card h2 { font-size: 23px; } .btn.lg span, .btn.lg { font-size: 14px; } }
+
   /* Toast */
   .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px); z-index: 90;
     background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 13px; font-weight: 550;
@@ -543,6 +560,35 @@
 
     <div class="stage-wrap">
       <div class="stage" id="stage">
+        <div class="welcome" id="welcome">
+          <div class="wc-card">
+            <svg class="wc-glyph" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+              <circle cx="13" cy="13" r="12" stroke="var(--accent)" stroke-width="1.2" opacity=".3"/>
+              <circle cx="13" cy="13" r="3.1" fill="var(--accent)"/>
+              <circle cx="4.5" cy="8" r="2" fill="var(--accent)" opacity=".8"/><circle cx="21" cy="7" r="2" fill="var(--accent)" opacity=".8"/>
+              <circle cx="20" cy="19.5" r="2" fill="var(--accent)" opacity=".8"/><circle cx="6" cy="20" r="2" fill="var(--accent)" opacity=".8"/>
+              <path d="M13 13 L4.5 8 M13 13 L21 7 M13 13 L20 19.5 M13 13 L6 20" stroke="var(--accent)" stroke-width="1" opacity=".5"/>
+            </svg>
+            <h2>Let's map your network</h2>
+            <p>Bring your people together and see the shape of your world — by industry, by place, and by the circles you move in. Everything stays in your browser.</p>
+            <div class="wc-actions">
+              <button class="btn primary lg" id="wcImport">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v12M8 11l4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                Import LinkedIn / Instagram
+              </button>
+              <button class="btn lg" id="wcAdd">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 5v14M5 12h14"/></svg>
+                Add people by hand
+              </button>
+            </div>
+            <div class="wc-steps">
+              <div class="wc-step"><span class="wc-dot" style="background:var(--accent)"></span>Import your exports, or add people from memory in seconds</div>
+              <div class="wc-step"><span class="wc-dot" style="background:var(--accent)"></span>See them re-drawn by industry, geography, and social circles</div>
+              <div class="wc-step"><span class="wc-dot" style="background:var(--accent)"></span>Spot your hubs, your reach, and who bridges your groups</div>
+            </div>
+            <button class="wc-sample" id="wcSample">Just exploring? Load sample data →</button>
+          </div>
+        </div>
         <div class="view show" id="view-overview"></div>
         <div class="view" id="view-industry">
           <div class="graph-view">
@@ -654,7 +700,7 @@
     </div>
     <div class="m-actions">
       <button class="btn" data-close>Done</button>
-      <button class="btn" id="loadSample">Reset to sample data</button>
+      <button class="btn" id="loadSample">Load sample data</button>
     </div>
   </div>
 </div>
@@ -789,11 +835,13 @@ function normalize(p) {
   return c;
 }
 function loadContacts() {
+  // Starts empty — this is your tool, not a demo. Sample data is opt-in via the
+  // welcome screen / import panel. Any saved array (even empty) is respected.
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const p = JSON.parse(raw); if (Array.isArray(p) && p.length) return p.map(normalize); }
+    if (raw) { const p = JSON.parse(raw); if (Array.isArray(p)) return p.map(normalize); }
   } catch {}
-  return SAMPLE.map(normalize);
+  return [];
 }
 function persist() { try { localStorage.setItem(KEY, JSON.stringify(state.contacts)); } catch {} }
 
@@ -1385,7 +1433,10 @@ function removeContact(id) {
   if (state.selectedId===id) state.selectedId=null;
   persist(); refreshData(); renderDrawer(); toast('Contact deleted');
 }
-function resetSample() { state.contacts = SAMPLE.map(normalize); state.selectedId=null; persist(); refreshData(); renderDrawer(); toast('Reset to sample data'); }
+function resetSample() {
+  if (state.contacts.length){ let ok=true; try{ ok=confirm('Replace your current network with sample data? This clears what you have.'); }catch{} if(!ok) return; }
+  state.contacts = SAMPLE.map(normalize); state.selectedId=null; persist(); refreshData(); renderDrawer(); toast('Loaded sample data');
+}
 
 /* =========================================================================
    VIEW ORCHESTRATION
@@ -1398,6 +1449,7 @@ const TAG_SPEC = { groupsOf:c=> c.tags.length ? c.tags : ['_untagged'], hubLabel
 
 function refreshData() {
   $('#navCount').textContent = state.contacts.length;
+  $('#app').classList.toggle('is-empty', state.contacts.length === 0);
   renderChips();
   const v = state.view;
   if (v==='overview') renderOverview();
@@ -1471,6 +1523,8 @@ document.querySelectorAll('.backdrop').forEach(bd=>{
   bd.querySelectorAll('[data-close]').forEach(b=> b.onclick=()=>bd.classList.remove('open'));
 });
 $('#importBtn').onclick = ()=>{ $('#impStatus').textContent=''; openModal('importModal'); };
+$('#wcImport').onclick = ()=>{ $('#impStatus').textContent=''; openModal('importModal'); };
+$('#wcSample').onclick = ()=>{ resetSample(); toast('Loaded sample data — reset anytime from Import'); };
 
 /* =========================================================================
    CAPTURE — fast, memory-jogging manual entry with contextual suggestions
@@ -1561,6 +1615,7 @@ function openCapture() {
   setTimeout(()=>$('#capName').focus(), 60);
 }
 $('#addBtn').onclick = openCapture;
+$('#wcAdd').onclick = openCapture;
 $('#capName').addEventListener('keydown', e=>{
   if (e.key==='Enter'){ e.preventDefault(); capturePerson(e.target.value); e.target.value=''; }
 });
@@ -1709,6 +1764,7 @@ $('#cFit').onclick = ()=> circlesSim && circlesSim.fit();
    BOOT
    ========================================================================= */
 applyTheme();
+$('#app').classList.toggle('is-empty', state.contacts.length === 0);
 setView('overview');
 $('#navCount').textContent = state.contacts.length;
 </script>
