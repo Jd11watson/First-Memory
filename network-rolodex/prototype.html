@@ -170,6 +170,9 @@
   }
   .btn.primary:hover { filter: brightness(1.07); background: var(--accent); color: var(--accent-ink); }
   .btn.icon { padding: 7px 9px; }
+  .review-btn { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); color: var(--accent); }
+  .review-btn:hover { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+  .rb-count { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 0 6px; font-size: 11px; font-weight: 700; }
 
   /* Filter chips row */
   .chips {
@@ -448,6 +451,24 @@
 
   .empty { display: grid; place-items: center; height: 100%; color: var(--ink-3); text-align: center; padding: 40px; }
 
+  /* Review / enrich */
+  .modal.review { max-width: 460px; }
+  .rv-head { display: flex; align-items: baseline; justify-content: space-between; }
+  .rv-progress { font-size: 12px; color: var(--ink-3); }
+  .rv-who { display: flex; align-items: center; gap: 12px; margin: 4px 0 16px; }
+  .rv-who .av { width: 42px; height: 42px; border-radius: 12px; flex: none; display: grid; place-items: center; font-size: 15px; font-weight: 640; color: #fff; }
+  .rv-who .rv-handle { font-size: 12px; color: var(--ink-3); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+  .rv-who .rv-srcpill { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; font-size: 10.5px; }
+  .rv-auto { font-size: 9.5px; text-transform: none; letter-spacing: 0; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 0 4px; margin-left: 4px; vertical-align: middle; }
+  .rv-region { padding: 8px 0; font-size: 13px; color: var(--ink-2); }
+  .rv-quick { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 2px; }
+  .rv-quick .qc { border: 1px solid var(--line-2); background: var(--panel); color: var(--ink-2); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+  .rv-quick .qc:hover { border-color: var(--accent); color: var(--ink); }
+  .rv-done { text-align: center; padding: 24px 10px 8px; }
+  .rv-done-mark { width: 46px; height: 46px; border-radius: 50%; background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); display: grid; place-items: center; font-size: 22px; margin: 0 auto 12px; }
+  .rv-done h3 { margin: 0 0 6px; font-size: 17px; }
+  .rv-done p { margin: 0; color: var(--ink-3); font-size: 13px; }
+
   /* First-run welcome */
   .welcome { position: absolute; inset: 0; z-index: 20; background: var(--bg); display: none; align-items: center; justify-content: center; padding: 32px; overflow: auto; }
   .app.is-empty .welcome { display: flex; }
@@ -546,6 +567,10 @@
         <button class="clr" id="searchClear" aria-label="Clear">✕</button>
       </div>
       <div class="spacer"></div>
+      <button class="btn review-btn" id="reviewBtn" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20h9M3 20l1-4 11-11a2.1 2.1 0 0 1 3 3L7 19l-4 1Z"/></svg>
+        Add details <span class="rb-count mono" id="reviewCount">0</span>
+      </button>
       <button class="btn" id="importBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v12M8 11l4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
         Import
@@ -701,6 +726,29 @@
     <div class="m-actions">
       <button class="btn" data-close>Done</button>
       <button class="btn" id="loadSample">Load sample data</button>
+    </div>
+  </div>
+</div>
+
+<div class="backdrop" id="reviewModal">
+  <div class="modal review">
+    <div class="rv-head">
+      <h2>Add details</h2>
+      <span class="rv-progress mono" id="rvProgress"></span>
+    </div>
+    <div class="msub" id="rvSub">Flesh out the people who came in thin — a company or city is enough to place them on the map.</div>
+    <div class="rv-body" id="rvBody"></div>
+    <div class="rv-done" id="rvDone" hidden>
+      <div class="rv-done-mark">✓</div>
+      <h3>All caught up</h3>
+      <p>Every contact has enough to place them. Nicely done.</p>
+    </div>
+    <div class="m-actions" id="rvActions">
+      <button class="btn" id="rvSkip">Skip</button>
+      <button class="btn primary" id="rvNext">Save &amp; next</button>
+    </div>
+    <div class="m-actions" id="rvDoneActions" hidden>
+      <button class="btn primary" data-close>Done</button>
     </div>
   </div>
 </div>
@@ -1450,6 +1498,7 @@ const TAG_SPEC = { groupsOf:c=> c.tags.length ? c.tags : ['_untagged'], hubLabel
 function refreshData() {
   $('#navCount').textContent = state.contacts.length;
   $('#app').classList.toggle('is-empty', state.contacts.length === 0);
+  updateReviewBtn();
   renderChips();
   const v = state.view;
   if (v==='overview') renderOverview();
@@ -1752,6 +1801,88 @@ $('#exportCsv').onclick = ()=>{
   toast('Exported CSV');
 };
 
+/* =========================================================================
+   REVIEW / ENRICH — flesh out contacts that came in thin (e.g. IG handles)
+   ========================================================================= */
+// "Thin" = nothing to place them on a lens. A company or city is enough.
+function needsDetails(c){ return !c.company && !c.title && !c.city; }
+let reviewQueue = [], reviewIdx = 0, rvStrength = 3, rvIndTouched = false;
+
+function updateReviewBtn(){
+  const n = state.contacts.filter(needsDetails).length;
+  $('#reviewBtn').hidden = n === 0;
+  $('#reviewCount').textContent = n;
+}
+function startReview(){
+  reviewQueue = state.contacts.filter(needsDetails).map(c=>c.id);
+  reviewIdx = 0;
+  if(!reviewQueue.length){ toast('Everyone has details already'); return; }
+  openModal('reviewModal'); renderReview();
+}
+function renderReview(){
+  while(reviewIdx < reviewQueue.length && !state.contacts.find(x=>x.id===reviewQueue[reviewIdx])) reviewIdx++;
+  const body=$('#rvBody'), done=$('#rvDone'), acts=$('#rvActions'), doneActs=$('#rvDoneActions');
+  if(reviewIdx >= reviewQueue.length){
+    body.hidden=true; done.hidden=false; acts.hidden=true; doneActs.hidden=false; $('#rvProgress').textContent='';
+    return;
+  }
+  body.hidden=false; done.hidden=true; acts.hidden=false; doneActs.hidden=true;
+  const c = state.contacts.find(x=>x.id===reviewQueue[reviewIdx]);
+  rvStrength = c.strength;
+  $('#rvProgress').textContent = `${reviewIdx+1} of ${reviewQueue.length}`;
+  const handle = c.notes && c.notes.startsWith('Instagram @') ? c.notes.slice('Instagram '.length) : '';
+  const srcLabel = c.source==='instagram'?'Instagram': c.source==='linkedin-csv'?'LinkedIn':'Manual';
+  body.innerHTML = `
+    <div class="rv-who">
+      <span class="av" style="background:${industryColor(c.industry)}">${initials(c.name)}</span>
+      <div><div style="font-weight:640;font-size:16px">${esc(c.name)}</div>
+        <div class="rv-handle">${handle?`<span>${esc(handle)}</span> ·`:''}<span class="rv-srcpill">${srcLabel}</span></div></div>
+    </div>
+    <div class="fld"><label>Real name</label><input id="rv_name" value="${esc(c.name)}"/></div>
+    <div class="row2">
+      <div class="fld"><label>Company</label><input id="rv_company" value="${esc(c.company)}" placeholder="where they work"/></div>
+      <div class="fld"><label>Title</label><input id="rv_title" value="${esc(c.title)}" placeholder="their role"/></div>
+    </div>
+    <div class="fld"><label>City</label><input id="rv_city" value="${esc(c.city)}" placeholder="where they live"/></div>
+    <div class="row2">
+      <div class="fld"><label>Industry <span class="rv-auto" id="rvAuto">auto</span></label>
+        <select id="rv_industry">${INDUSTRIES.map(i=>`<option value="${i.key}" ${c.industry===i.key?'selected':''}>${i.label}</option>`).join('')}</select></div>
+      <div class="fld"><label>Region</label><div class="rv-region" id="rvRegion"></div></div>
+    </div>
+    <div class="fld"><label>Relationship strength</label><div class="spick" id="rv_strength">${[1,2,3,4,5].map(n=>`<button class="${n<=c.strength?'on':''}" data-s="${n}">${n}</button>`).join('')}</div></div>
+    <div class="fld"><label>Tags</label><input id="rv_tags" value="${esc(c.tags.join(', '))}"/></div>`;
+  body.querySelectorAll('#rv_strength button').forEach(btn=> btn.onclick=()=>{ rvStrength=+btn.dataset.s; body.querySelectorAll('#rv_strength button').forEach(x=>x.classList.toggle('on', +x.dataset.s<=rvStrength)); });
+  rvIndTouched = c.industryOverride;
+  $('#rv_industry').onchange = ()=>{ rvIndTouched = true; $('#rvAuto').style.display='none'; };
+  if (rvIndTouched) $('#rvAuto').style.display='none';
+  const updateInferred = ()=>{
+    if (!rvIndTouched) $('#rv_industry').value = inferIndustry({ title:$('#rv_title').value, company:$('#rv_company').value });
+    $('#rvRegion').textContent = REGION_LABEL[inferRegion({ city:$('#rv_city').value })];
+  };
+  ['rv_company','rv_title','rv_city'].forEach(id=>$('#'+id).oninput=updateInferred);
+  body.querySelectorAll('input').forEach(inp=> inp.onkeydown=e=>{ if(e.key==='Enter'){ e.preventDefault(); saveReview(); } });
+  updateInferred();
+  setTimeout(()=>{ const n=$('#rv_name'); if(n){ n.focus(); n.select(); } }, 40);
+}
+function saveReview(){
+  const c = state.contacts.find(x=>x.id===reviewQueue[reviewIdx]);
+  if(c){
+    const patch = {
+      name: $('#rv_name').value.trim()||c.name,
+      company: $('#rv_company').value, title: $('#rv_title').value, city: $('#rv_city').value,
+      strength: rvStrength, tags: $('#rv_tags').value.split(',').map(s=>s.trim()).filter(Boolean),
+    };
+    // only set industry explicitly when the user chose it — otherwise let it re-infer
+    if (rvIndTouched) patch.industry = $('#rv_industry').value;
+    update(c.id, patch);
+  }
+  reviewIdx++; updateReviewBtn(); renderReview();
+}
+function skipReview(){ reviewIdx++; renderReview(); }
+$('#reviewBtn').onclick = startReview;
+$('#rvNext').onclick = saveReview;
+$('#rvSkip').onclick = skipReview;
+
 /* Graph controls */
 $('#gZoomIn').onclick = ()=> industrySim && industrySim.zoom(1.2);
 $('#gZoomOut').onclick = ()=> industrySim && industrySim.zoom(0.83);
@@ -1767,4 +1898,5 @@ applyTheme();
 $('#app').classList.toggle('is-empty', state.contacts.length === 0);
 setView('overview');
 $('#navCount').textContent = state.contacts.length;
+updateReviewBtn();
 </script>
